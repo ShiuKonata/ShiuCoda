@@ -8,291 +8,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    /* ── 籤等級色彩 ── */
-    .fl-top     { color: #c8820a; background: rgba(200,130,10,.12); border-color: rgba(200,130,10,.3); }
-    .fl-good    { color: #2a9d8f; background: rgba(42,157,143,.12); border-color: rgba(42,157,143,.3); }
-    .fl-mixed   { color: #5a7fc0; background: rgba(90,127,192,.12); border-color: rgba(90,127,192,.3); }
-    .fl-reverse { color: #9b59b6; background: rgba(155,89,182,.12); border-color: rgba(155,89,182,.3); }
-    .fl-low     { color: #c0392b; background: rgba(192,57,43,.12);  border-color: rgba(192,57,43,.3); }
-
-    /* ── 吉祥物區 ── */
-    .fortune-top {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2.5rem 2rem 1rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .mascot-wrapper {
-      position: relative;
-      width: 180px;
-      cursor: pointer;
-      user-select: none;
-      transition: transform .15s;
-    }
-
-    .mascot-wrapper:hover { transform: scale(1.05); }
-    .mascot-wrapper:active { transform: scale(.97); }
-    .mascot-wrapper.shaking { animation: mascot-shake .5s ease; }
-
-    @keyframes mascot-shake {
-      0%,100%{ transform: translateX(0) rotate(0); }
-      20%    { transform: translateX(-6px) rotate(-4deg); }
-      40%    { transform: translateX(6px) rotate(4deg); }
-      60%    { transform: translateX(-4px) rotate(-2deg); }
-      80%    { transform: translateX(4px) rotate(2deg); }
-    }
-
-    .mascot-wrapper img {
-      width: 100%;
-      display: block;
-      pointer-events: none;
-      -webkit-user-drag: none;
-    }
-
-    /* 防複製透明遮罩 */
-    .mascot-cover {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: transparent;
-    }
-
-    .mascot-hint {
-      margin-top: .6rem;
-      font-size: .82rem;
-      color: var(--text-muted);
-      letter-spacing: .1em;
-      animation: hint-pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes hint-pulse {
-      0%,100%{ opacity: .6; } 50%{ opacity: 1; }
-    }
-
-    /* ── 抽籤結果 ── */
-    .fortune-result {
-      display: none;
-      max-width: 480px;
-      width: 100%;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.8rem;
-      text-align: center;
-      animation: result-in .4s ease;
-    }
-
-    @keyframes result-in {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .fortune-result.show { display: block; margin-top: 1.5rem; }
-
-    .result-num {
-      font-size: .8rem;
-      color: var(--text-muted);
-      letter-spacing: .15em;
-      margin-bottom: .5rem;
-    }
-
-    .result-level {
-      display: inline-block;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      padding: .3rem 1.2rem;
-      border-radius: 2rem;
-      border: 1px solid;
-      margin-bottom: 1rem;
-    }
-
-    .result-text {
-      font-size: .88rem;
-      line-height: 1.8;
-      color: var(--text);
-      background: var(--bg3);
-      border-radius: .6rem;
-      padding: 1rem 1.2rem;
-      text-align: left;
-      margin-bottom: 1.2rem;
-    }
-
-    .result-actions {
-      display: flex;
-      gap: .6rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .action-btn {
-      border: none;
-      border-radius: 2rem;
-      padding: .5rem 1.2rem;
-      font-family: inherit;
-      font-size: .85rem;
-      cursor: pointer;
-      transition: opacity .2s;
-    }
-
-    .action-btn:hover { opacity: .8; }
-    .btn-named  { background: var(--accent); color: #fff; }
-    .btn-anon   { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
-    .btn-skip   { background: none; color: var(--text-muted); border: 1px solid var(--border); }
-
-    .draw-again {
-      display: none;
-      margin-top: 1rem;
-      font-size: .78rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .draw-again.show { display: block; }
-
-    /* ── 送出 Modal ── */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.45);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-
-    .modal-backdrop.open { display: flex; }
-
-    .modal-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.8rem;
-      width: 100%;
-      max-width: 400px;
-      animation: result-in .25s ease;
-    }
-
-    .modal-title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-bottom: 1.2rem;
-    }
-
-    .modal-preview {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: .6rem;
-      padding: .8rem 1rem;
-      margin-bottom: 1rem;
-      font-size: .82rem;
-      color: var(--text-muted);
-    }
-
-    .modal-preview .prev-level {
-      font-weight: 700;
-      font-size: 1rem;
-      display: inline-block;
-      padding: .15rem .6rem;
-      border-radius: 2rem;
-      border: 1px solid;
-      margin-bottom: .4rem;
-    }
-
-    .form-group { margin-bottom: .8rem; }
-
-    .form-label {
-      display: block;
-      font-size: .75rem;
-      color: var(--text-muted);
-      margin-bottom: .3rem;
-      letter-spacing: .05em;
-    }
-
-    .form-input, .form-textarea {
-      width: 100%;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: .5rem;
-      padding: .6rem .8rem;
-      color: var(--text);
-      font-family: inherit;
-      font-size: .88rem;
-      outline: none;
-      transition: border-color .2s;
-    }
-
-    .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
-
-    .form-textarea { resize: none; height: 70px; }
-
-    .char-count {
-      text-align: right;
-      font-size: .7rem;
-      color: var(--text-muted);
-      margin-top: .2rem;
-    }
-
-    .modal-actions { display: flex; gap: .6rem; margin-top: 1rem; }
-
-    .modal-submit {
-      flex: 1;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 2rem;
-      padding: .6rem;
-      font-family: inherit;
-      font-size: .88rem;
-      cursor: pointer;
-      transition: background .2s;
-    }
-
-    .modal-submit:hover { background: var(--accent-dim); }
-
-    .modal-cancel {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 2rem;
-      padding: .6rem 1rem;
-      font-family: inherit;
-      font-size: .88rem;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-
-    /* ── 籤運牆 ── */
-    .wall-section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1rem 2rem 4rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .wall-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-    }
-
-    .wall-title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: .15em;
-    }
-
-    .wall-count {
-      font-size: .78rem;
-      color: var(--text-muted);
-    }
+    .fl-top     { color:#c8820a; background:rgba(200,130,10,.12); border-color:rgba(200,130,10,.3); }
+    .fl-good    { color:#2a9d8f; background:rgba(42,157,143,.12); border-color:rgba(42,157,143,.3); }
+    .fl-mixed   { color:#5a7fc0; background:rgba(90,127,192,.12); border-color:rgba(90,127,192,.3); }
+    .fl-reverse { color:#9b59b6; background:rgba(155,89,182,.12); border-color:rgba(155,89,182,.3); }
+    .fl-low     { color:#c0392b; background:rgba(192,57,43,.12);  border-color:rgba(192,57,43,.3); }
 
     .wall-grid {
       display: grid;
@@ -320,11 +40,7 @@
       width: fit-content;
     }
 
-    .card-num {
-      font-size: .7rem;
-      color: var(--text-muted);
-      margin-top: -.3rem;
-    }
+    .card-num  { font-size: .7rem; color: var(--text-muted); margin-top: -.3rem; }
 
     .card-poem {
       font-size: .78rem;
@@ -338,16 +54,9 @@
       overflow: hidden;
     }
 
-    .card-divider {
-      height: 1px;
-      background: var(--border);
-    }
+    .card-divider { height: 1px; background: var(--border); }
 
-    .card-message {
-      font-size: .85rem;
-      color: var(--text);
-      line-height: 1.5;
-    }
+    .card-message { font-size: .85rem; color: var(--text); line-height: 1.5; }
 
     .card-footer {
       display: flex;
@@ -356,17 +65,10 @@
       margin-top: .2rem;
     }
 
-    .card-name {
-      font-size: .75rem;
-      color: var(--accent);
-    }
+    .card-name { font-size: .75rem; color: var(--accent); }
+    .card-date { font-size: .68rem; color: var(--text-muted); }
 
-    .card-date {
-      font-size: .68rem;
-      color: var(--text-muted);
-    }
-
-    .wall-empty {
+    .wall-empty, .wall-loading {
       grid-column: 1 / -1;
       text-align: center;
       padding: 3rem;
@@ -374,13 +76,21 @@
       font-size: .88rem;
     }
 
-    .wall-loading {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
-      font-size: .85rem;
+    .wall-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
     }
+
+    .wall-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: .15em;
+    }
+
+    .wall-count { font-size: .78rem; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -398,66 +108,22 @@
   </ul>
 </nav>
 
-<!-- ── 抽籤區 ── -->
-<div class="fortune-top">
-  <div class="mascot-wrapper" id="mascot" onclick="startDrawing()">
-    <img src="images/mascot/coda_fortune.gif"
-         draggable="false"
-         oncontextmenu="return false"
-         alt="詩雨蔻達">
-    <div class="mascot-cover" oncontextmenu="return false"></div>
-  </div>
-  <p class="mascot-hint" id="mascot-hint">點蔻達來抽籤！</p>
+<img class="page-banner" src="images/banners/fortune-banner.webp" alt="" draggable="false" oncontextmenu="return false">
 
-  <!-- 結果顯示 -->
-  <div class="fortune-result" id="fortune-result">
-    <div class="result-num" id="result-num"></div>
-    <div class="result-level" id="result-level"></div>
-    <div class="result-text" id="result-text"></div>
-    <div class="result-actions">
-      <button class="action-btn btn-named" onclick="openModal('named')">✍️ 留名上牆</button>
-      <button class="action-btn btn-anon"  onclick="openModal('anon')">🎭 匿名上牆</button>
-      <button class="action-btn btn-skip"  onclick="skipPost()">跳過</button>
-    </div>
-  </div>
-  <span class="draw-again" id="draw-again" onclick="resetDraw()">再抽一次</span>
+<div class="page-header">
+  <h1>🎋 籤運牆</h1>
+  <p>點右下角的蔻達來抽籤，抽完可以留名貼到這裡 ✨</p>
 </div>
 
-<!-- ── 送出 Modal ── -->
-<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-title">🧧 貼到籤運牆</div>
-    <div class="modal-preview" id="modal-preview"></div>
-
-    <div class="form-group" id="name-group">
-      <label class="form-label">你的名字</label>
-      <input class="form-input" id="post-name" type="text" placeholder="呱民小花" maxlength="20">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">留言給蔻達（最多 30 字）</label>
-      <textarea class="form-textarea" id="post-msg" placeholder="寫下你想說的話…" maxlength="30"
-        oninput="updateCount()"></textarea>
-      <div class="char-count"><span id="char-count">0</span> / 30</div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="modal-submit" onclick="submitPost()">貼上籤運牆 🎋</button>
-      <button class="modal-cancel" onclick="closeModal()">取消</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── 籤運牆 ── -->
-<section class="wall-section">
+<main>
   <div class="wall-header">
-    <span class="wall-title">🎋 籤運牆</span>
+    <span class="wall-title">🎋 大家的籤運</span>
     <span class="wall-count" id="wall-count"></span>
   </div>
   <div class="wall-grid" id="wall-grid">
     <div class="wall-loading">載入中…</div>
   </div>
-</section>
+</main>
 
 <footer>
   <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
@@ -465,160 +131,21 @@
 </footer>
 
 <script>
-  /* ── 請將 Google Apps Script 部署網址貼到這裡 ── */
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMU_Rlt_17DCzQQhdrr1atIwtW_akrDAanUIpGg3-5xdJ-IUU2ZZevua7yEO_erD2R/exec';
 
-  /* ── 19 支籤 ── */
-  const FORTUNES = [
-    { num:'一',   level:'大大吉',         cls:'fl-top',     text:'大大吉！！這是最頂的！……等等，你是不是作弊了？這種運氣也太離譜了吧，是不是把阿統的陽壽拿走了!!咳咳咳咳咳🐸' },
-    { num:'二',   level:'大吉',           cls:'fl-top',     text:'哇你運氣真好！……算了應該只是碰巧啦。阿統真的覺得只是碰巧🐸' },
-    { num:'三',   level:'向大吉',         cls:'fl-top',     text:'向大吉——正在往大吉的路上！有進步嘛，繼續努力！……但還沒到大吉就別得意，阿統會盯著你🐸' },
-    { num:'四',   level:'末大吉',         cls:'fl-top',     text:'末大吉！差一點點就是大吉了……像你平常做事一樣，總是差那麼一步。呱呱好好加油！🐸' },
-    { num:'五',   level:'吉凶未分末大吉', cls:'fl-good',    text:'吉凶未分末大吉……這名字念起來阿統自己都嫌麻煩。總之就是有點好、有點不確定，注意一下就好🐸' },
-    { num:'六',   level:'吉',             cls:'fl-good',    text:'平平穩穩的……聽起來很無聊？穩定就是一種幸福啦，呱民要懂得珍惜🐸' },
-    { num:'七',   level:'中吉',           cls:'fl-good',    text:'還不錯嘛，有進步！雖然跟大統領比還差很遠就是了……繼續加油🐸' },
-    { num:'八',   level:'小吉',           cls:'fl-good',    text:'還行還行，不上不下的，跟你平常的表現一樣🐸' },
-    { num:'九',   level:'後吉',           cls:'fl-good',    text:'後吉！現在可能沒感覺，但後來會越來越好的。阿統說：要有耐心！……雖然我自己沒什麼耐心就是了🐸' },
-    { num:'十',   level:'末吉',           cls:'fl-good',    text:'末吉……就是剛剛好及格的吉運。就像考了60分——有過就好啦，別太挑剔！🐸' },
-    { num:'十一', level:'吉凶不分末吉',   cls:'fl-mixed',   text:'吉凶不分末吉……說真的阿統自己也搞不清楚這是好是壞。總之小心一點，但也別太緊張？嘿嘿🐸' },
-    { num:'十二', level:'吉凶相交末吉',   cls:'fl-mixed',   text:'吉凶相交末吉——好壞事會交替出現的意思。有好有壞才叫人生嘛！阿統覺得這樣挺刺激的……對你來說🐸' },
-    { num:'十三', level:'吉凶相半',       cls:'fl-mixed',   text:'吉凶相半！好的一半、壞的一半——所以看你自己怎麼選嘍？阿統說要選就是選好的那一半，嘿嘿🐸' },
-    { num:'十四', level:'吉凶相央',       cls:'fl-mixed',   text:'吉凶相央……正正好好在中間，這個籤最難解釋了。阿統也只能說：看情況吧，呱民自己多注意🐸' },
-    { num:'十五', level:'小凶後吉',       cls:'fl-reverse', text:'小凶後吉！先有一點點不順，但之後會好的——就像阿統有時候嘴硬，其實心裡是在為你好啦……才怪(吐)🐸' },
-    { num:'十六', level:'凶後吉',         cls:'fl-reverse', text:'凶後吉！先壞後好——這種劇情最爽了！低谷之後就是高峰，呱民要撐住！阿統說你可以的🐸' },
-    { num:'十七', level:'凶後大吉',       cls:'fl-reverse', text:'凶後大吉！！最戲劇性的逆轉——先跌到谷底，再飛上天！阿統最喜歡這種主角光環劇情了，你就是故事的主角🐸' },
-    { num:'十八', level:'凶',             cls:'fl-low',     text:'哎呀抽到凶了……嘿嘿，別怕！阿統跟ㄋ說：跌倒了就爬起來，沒什麼大不了🐸' },
-    { num:'十九', level:'大凶',           cls:'fl-low',     text:'大凶！……嘿嘿，恭喜你成功抽到最難抽的，你的手氣真是…獨特。阿統保佑你快買個開運道袍吧🐸' },
-  ];
-
-  let currentFortune = null;
-  let postMode = null;
-  let drawing = false;
-
-  /* ── 開始抽籤 ── */
-  function startDrawing() {
-    if (drawing) return;
-    drawing = true;
-    document.getElementById('fortune-result').classList.remove('show');
-    document.getElementById('draw-again').classList.remove('show');
-    document.getElementById('mascot-hint').textContent = '搖籤中…';
-
-    const mascot = document.getElementById('mascot');
-    mascot.classList.add('shaking');
-
-    setTimeout(() => {
-      mascot.classList.remove('shaking');
-      currentFortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-      showResult(currentFortune);
-      drawing = false;
-    }, 700);
-  }
-
-  /* ── 顯示結果 ── */
-  function showResult(f) {
-    document.getElementById('result-num').textContent = `第 ${f.num} 籤`;
-    const lv = document.getElementById('result-level');
-    lv.textContent = f.level;
-    lv.className = `result-level ${f.cls}`;
-    document.getElementById('result-text').textContent = f.text;
-    document.getElementById('fortune-result').classList.add('show');
-    document.getElementById('draw-again').classList.add('show');
-    document.getElementById('mascot-hint').textContent = '要貼到籤運牆嗎？';
-  }
-
-  /* ── 重置 ── */
-  function resetDraw() {
-    document.getElementById('fortune-result').classList.remove('show');
-    document.getElementById('draw-again').classList.remove('show');
-    document.getElementById('mascot-hint').textContent = '點蔻達來抽籤！';
-    currentFortune = null;
-  }
-
-  function skipPost() {
-    resetDraw();
-  }
-
-  /* ── Modal ── */
-  function openModal(mode) {
-    postMode = mode;
-    document.getElementById('name-group').style.display = mode === 'named' ? 'block' : 'none';
-    document.getElementById('post-name').value = '';
-    document.getElementById('post-msg').value = '';
-    document.getElementById('char-count').textContent = '0';
-
-    const f = currentFortune;
-    document.getElementById('modal-preview').innerHTML =
-      `<span class="prev-level ${f.cls}">${f.level}</span><br>` +
-      `<span style="font-size:.75rem;color:var(--text-muted)">第${f.num}籤</span>`;
-
-    document.getElementById('modal').classList.add('open');
-  }
-
-  function closeModal(e) {
-    if (e && e.target !== document.getElementById('modal')) return;
-    document.getElementById('modal').classList.remove('open');
-  }
-
-  function updateCount() {
-    const v = document.getElementById('post-msg').value;
-    document.getElementById('char-count').textContent = v.length;
-  }
-
-  /* ── 送出到籤運牆 ── */
-  async function submitPost() {
-    const f = currentFortune;
-    const name = postMode === 'named'
-      ? (document.getElementById('post-name').value.trim() || '匿名呱民')
-      : '匿名呱民';
-    const msg = document.getElementById('post-msg').value.trim();
-
-    const entry = {
-      action: 'addFortune',
-      num: f.num,
-      level: f.level,
-      cls: f.cls,
-      text: f.text,
-      name: name,
-      message: msg,
-      date: new Date().toLocaleDateString('zh-TW')
-    };
-
-    document.querySelector('.modal-submit').textContent = '送出中…';
-    document.querySelector('.modal-submit').disabled = true;
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(entry)
-      });
-      document.getElementById('modal').classList.remove('open');
-      resetDraw();
-      loadWall();
-    } catch (err) {
-      alert('送出失敗，請稍後再試');
-    }
-
-    document.querySelector('.modal-submit').textContent = '貼上籤運牆 🎋';
-    document.querySelector('.modal-submit').disabled = false;
-  }
-
-  /* ── 載入籤運牆 ── */
   async function loadWall() {
     const grid = document.getElementById('wall-grid');
     grid.innerHTML = '<div class="wall-loading">載入中…</div>';
-
     try {
       const res = await fetch(SCRIPT_URL + '?action=getFortunes');
       const data = await res.json();
-
       if (!data.length) {
         grid.innerHTML = '<div class="wall-empty">還沒有人貼上籤運牆，你來第一個！</div>';
         document.getElementById('wall-count').textContent = '';
         return;
       }
-
-      document.getElementById('wall-count').textContent = `共 ${data.length} 張`;
-      grid.innerHTML = data.reverse().map(d => `
+      document.getElementById('wall-count').textContent = '共 ' + data.length + ' 張';
+      grid.innerHTML = data.slice().reverse().map(d => `
         <div class="wall-card">
           <span class="card-level ${d.cls}">${d.level}</span>
           <span class="card-num">第${d.num}籤</span>
@@ -635,13 +162,10 @@
     }
   }
 
-  /* 防右鍵 */
-  document.addEventListener('contextmenu', e => {
-    if (e.target.closest('.mascot-wrapper')) e.preventDefault();
-  });
-
+  window.loadWall = loadWall;
   loadWall();
 </script>
+<script src="js/mascot.js"></script>
 
 </body>
 </html>
