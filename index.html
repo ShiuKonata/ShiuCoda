@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>詩雨蔻達 ShiuCoda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent:     #2a9d8f;
+      --accent-dim: #1f7a6e;
+      --accent-glow:#4dbfac;
+      --bg:         #e6f4f0;
+      --bg2:        #d4ece4;
+      --bg3:        #c0e2d8;
+      --text:       #1a3028;
+      --text-muted: #4a7a6e;
+      --border:     rgba(42,157,143,.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── 導覽列 ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(230,244,240,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .8rem 2rem;
+    }
+
+    .nav-logo {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.6rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: .85rem;
+      letter-spacing: .05em;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+    }
+
+    .hero-art {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-art img {
+      max-height: 520px;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 32px rgba(42,157,143,.35));
+      border-radius: .5rem;
+    }
+
+    .hero-art .art-placeholder {
+      width: 340px;
+      height: 480px;
+      border: 2px dashed var(--border);
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .8rem;
+      color: var(--text-muted);
+      font-size: .85rem;
+    }
+
+    .hero-art .art-placeholder span { font-size: 2.5rem; }
+
+    .hero-info { display: flex; flex-direction: column; gap: 1.4rem; }
+
+    .hero-name-jp {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      letter-spacing: .05em;
+    }
+
+    .hero-name-en {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      margin-top: -.6rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(185,196,104,.1);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: .3rem .9rem;
+      font-size: .78rem;
+      color: var(--accent);
+      width: fit-content;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .tag {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: .25rem .75rem;
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    /* ── 區塊共用 ── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    section + section {
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: .15em;
+      margin-bottom: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── 基本資料 ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      padding: 1rem 1.2rem;
+    }
+
+    .info-card .label {
+      font-size: .7rem;
+      color: var(--text-muted);
+      letter-spacing: .1em;
+      margin-bottom: .4rem;
+    }
+
+    .info-card .value {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── 畫廊區 ── */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: .8rem;
+      overflow: hidden;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-dim);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      color: var(--text-muted);
+      font-size: .75rem;
+    }
+
+    .gallery-placeholder span { font-size: 1.8rem; }
+
+    .gallery-hint {
+      margin-top: 1rem;
+      font-size: .78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ── 原創曲 ── */
+    .songs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: .8rem;
+    }
+
+    .song-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .6rem;
+      padding: .8rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, background .2s;
+    }
+
+    .song-item:hover {
+      border-color: var(--accent-dim);
+      background: var(--bg3);
+    }
+
+    .song-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .song-title { font-size: .88rem; line-height: 1.4; }
+
+    .song-year {
+      margin-left: auto;
+      font-size: .72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── 其他頁面連結 ── */
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .page-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.6rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, transform .2s;
+    }
+
+    .page-link:hover {
+      border-color: var(--accent-dim);
+      transform: translateY(-3px);
+    }
+
+    .page-link .icon { font-size: 2rem; }
+    .page-link .name { font-size: .88rem; font-weight: 500; }
+    .page-link .desc { font-size: .72rem; color: var(--text-muted); text-align: center; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem;
+      font-size: .75rem;
+      color: var(--text-muted);
+      line-height: 2;
+    }
+
+    /* ── 燈箱 ── */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: .5rem;
+      object-fit: contain;
+    }
+
+    /* ── RWD ── */
+    @media (max-width: 700px) {
+      .hero { grid-template-columns: 1fr; padding: 2.5rem 1.2rem 2rem; gap: 2rem; }
+      .hero-art { order: -1; }
+      .hero-art .art-placeholder { width: 220px; height: 300px; }
+      .hero-name-jp { font-size: 2rem; }
+      nav { padding: .7rem 1rem; }
+      .nav-links { gap: .9rem; }
+      section { padding: 2rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── 導覽列 ── -->
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">關於蔻達</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-art">
+    <!-- 把角色立繪放在 images/character/ 資料夾，改下面的路徑 -->
+    <!-- <img src="images/character/main.png" alt="詩雨蔻達"> -->
+    <div class="art-placeholder">
+      <span>🖼️</span>
+      <div>角色立繪</div>
+      <div style="font-size:.7rem;text-align:center;padding:0 1rem">將立繪放入<br>images/character/</div>
+    </div>
+  </div>
+
+  <div class="hero-info">
+    <div>
+      <div class="hero-name-jp">詩雨蔻達</div>
+      <div class="hero-name-en">ShiuCoda</div>
+    </div>
+    <div class="hero-badge">💎 預見娛樂 · 一期生</div>
+    <p class="hero-desc">我是即將成為大統領的精靈CODA°(╭╮)° 跟隨我吧…嘿嘿✐☡</p>
+    <div class="hero-tags">
+      <span class="tag">吉他彈唱</span>
+      <span class="tag">歌勢</span>
+      <span class="tag">傲嬌可愛</span>
+      <span class="tag">188cm</span>
+      <span class="tag">台灣</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 基本資料 ── -->
+<section>
+  <h2 class="section-title">📋 基本資料</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">生日</div>
+      <div class="value">6月6日</div>
+    </div>
+    <div class="info-card">
+      <div class="label">出道日</div>
+      <div class="value">2023.02.25</div>
+    </div>
+    <div class="info-card">
+      <div class="label">畢業日</div>
+      <div class="value">2026.12.25</div>
+    </div>
+    <div class="info-card">
+      <div class="label">粉絲名稱</div>
+      <div class="value">呱民</div>
+    </div>
+    <div class="info-card">
+      <div class="label">隸屬</div>
+      <div class="value">預見娛樂</div>
+    </div>
+    <div class="info-card">
+      <div class="label">期別</div>
+      <div class="value">一期生</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 蔻達的畫廊區 ── -->
+<section>
+  <h2 class="section-title">🎨 蔻達的畫廊</h2>
+  <div class="gallery-grid" id="gallery">
+    <!-- 新增插圖：在下方複製一個 gallery-item，改 img src 路徑 -->
+    <!-- 範例：
+    <div class="gallery-item" onclick="openLightbox('images/gallery/圖片名稱.jpg')">
+      <img src="images/gallery/圖片名稱.jpg" alt="">
+    </div>
+    -->
+    <div class="gallery-item">
+      <div class="gallery-placeholder"><span>🖌️</span><div>新增插圖</div></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-placeholder"><span>🖌️</span><div>新增插圖</div></div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-placeholder"><span>🖌️</span><div>新增插圖</div></div>
+    </div>
+  </div>
+  <p class="gallery-hint">將圖片放入 images/gallery/ 資料夾，取消上方註解即可顯示</p>
+</section>
+
+<!-- ── 原創曲精選 ── -->
+<section>
+  <h2 class="section-title">🎵 原創曲</h2>
+  <div class="songs-grid" id="songs-list">
+    <!-- 新增曲目：複製下方範例，填入曲名、YouTube連結、年份 -->
+    <!-- 範例：
+    <a class="song-item" href="https://www.youtube.com/watch?v=影片ID" target="_blank">
+      <span class="song-icon">🎵</span>
+      <span class="song-title">曲名</span>
+      <span class="song-year">2024</span>
+    </a>
+    -->
+    <div class="song-item" style="color:var(--text-muted);font-size:.82rem;">
+      <span class="song-icon">🎵</span>
+      <span>原創曲待新增 — 複製上方範例即可</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── 其他頁面 ── -->
+<section>
+  <h2 class="section-title">🔗 更多蔻達的一切</h2>
+  <div class="pages-grid">
+    <a class="page-link" href="timeline.html">
+      <span class="icon">📜</span>
+      <span class="name">人生足跡</span>
+      <span class="desc">蔻達的大小事紀錄</span>
+    </a>
+    <a class="page-link" href="music.html">
+      <span class="icon">🎵</span>
+      <span class="name">歌曲作品</span>
+      <span class="desc">原創曲 · cover 完整收錄</span>
+    </a>
+    <a class="page-link" href="videos.html">
+      <span class="icon">🎥</span>
+      <span class="name">精選影片</span>
+      <span class="desc">精彩片段精選</span>
+    </a>
+    <a class="page-link" href="fortune.html">
+      <span class="icon">🀄</span>
+      <span class="name">詩雨國抽籤</span>
+      <span class="desc">抽籤 · 綁籤牆</span>
+    </a>
+    <a class="page-link" href="postcards.html">
+      <span class="icon">💌</span>
+      <span class="name">明信片牆</span>
+      <span class="desc">粉絲留言牆</span>
+    </a>
+    <a class="page-link" href="memorial.html">
+      <span class="icon">🕯️</span>
+      <span class="name">追思紀念</span>
+      <span class="desc">供奉 · 留言 · 綁籤</span>
+    </a>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+  <div style="margin-top:.5rem;font-size:.68rem;">感謝你存在過，感謝你帶來的每一個快樂 💧</div>
+</footer>
+
+<!-- ── 燈箱 ── -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
