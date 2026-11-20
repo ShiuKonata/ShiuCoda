@@ -14,7 +14,13 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(230,244,240,.82), rgba(230,244,240,.82)),
+    var(--page-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text);
   font-family: 'Noto Sans TC', sans-serif;
   font-weight: 300;
@@ -62,19 +68,6 @@ nav {
 
 .nav-links a:hover,
 .nav-links a.active { color: var(--accent); }
-
-/* ── 頁面背景圖（整頁） ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: var(--page-bg, none);
-  background-size: cover;
-  background-position: center;
-  opacity: .18;
-  z-index: -1;
-  pointer-events: none;
-}
 
 /* ── 頁面標題 ── */
 .page-header {
