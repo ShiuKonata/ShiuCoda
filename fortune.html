@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>詩雨國抽籤 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .fortune-tabs {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .fortune-tab {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      padding: 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, background .2s;
+    }
+
+    .fortune-tab:hover,
+    .fortune-tab.active {
+      border-color: var(--accent);
+      background: var(--bg3);
+    }
+
+    .fortune-tab .tab-icon { font-size: 1.8rem; display: block; margin-bottom: .4rem; }
+    .fortune-tab .tab-name { font-size: .9rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於蔻達</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="fortune.html" class="active">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>🀄 詩雨國抽籤</h1>
+  <p>讓大統領為你指引方向</p>
+</div>
+
+<main>
+  <div class="fortune-tabs">
+    <div class="fortune-tab active">
+      <span class="tab-icon">🎋</span>
+      <span class="tab-name">抽籤</span>
+    </div>
+    <div class="fortune-tab">
+      <span class="tab-icon">🧧</span>
+      <span class="tab-name">綁籤牆</span>
+    </div>
+  </div>
+
+  <div class="placeholder-block">
+    <span class="icon">🀄</span>
+    詩雨國抽籤功能待移入<br>
+    <span style="font-size:.78rem">從追思紀念會移植抽籤與綁籤牆功能</span>
+  </div>
+</main>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+</body>
+</html>

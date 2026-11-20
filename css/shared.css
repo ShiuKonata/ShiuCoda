@@ -1,0 +1,152 @@
+/* ── 共用樣式 ── */
+:root {
+  --accent:     #2a9d8f;
+  --accent-dim: #1f7a6e;
+  --accent-glow:#4dbfac;
+  --bg:         #e6f4f0;
+  --bg2:        #d4ece4;
+  --bg3:        #c0e2d8;
+  --text:       #1a3028;
+  --text-muted: #4a7a6e;
+  --border:     rgba(42,157,143,.2);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* ── 導覽列 ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(230,244,240,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .8rem 2rem;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.nav-logo {
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: .1em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.4rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: .85rem;
+  letter-spacing: .05em;
+  transition: color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active { color: var(--accent); }
+
+/* ── 頁面標題 ── */
+.page-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: .05em;
+}
+
+.page-header p {
+  margin-top: .5rem;
+  font-size: .9rem;
+  color: var(--text-muted);
+}
+
+/* ── 主內容區 ── */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 4rem;
+}
+
+/* ── 區塊標題 ── */
+.section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: .15em;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── 卡片 ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: .8rem;
+  padding: 1.2rem 1.4rem;
+}
+
+/* ── Placeholder ── */
+.placeholder-block {
+  background: var(--bg2);
+  border: 2px dashed var(--border);
+  border-radius: 1rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: .9rem;
+  line-height: 2;
+}
+
+.placeholder-block .icon { font-size: 2.5rem; display: block; margin-bottom: .8rem; }
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 2rem;
+  font-size: .75rem;
+  color: var(--text-muted);
+  line-height: 2;
+}
+
+/* ── RWD ── */
+@media (max-width: 700px) {
+  nav { padding: .7rem 1rem; }
+  .nav-links { gap: .8rem; }
+  .page-header { padding: 2rem 1.2rem 1.5rem; }
+  .page-header h1 { font-size: 1.5rem; }
+  main { padding: 1.5rem 1.2rem 3rem; }
+}

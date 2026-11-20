@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人生足跡 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    /* ── Timeline ── */
+    .timeline { position: relative; padding-left: 2rem; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: .5rem;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: .4rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+
+    .tl-date {
+      font-size: .75rem;
+      color: var(--text-muted);
+      letter-spacing: .08em;
+      margin-bottom: .3rem;
+    }
+
+    .tl-title {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .tl-desc {
+      font-size: .85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .tl-year-label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .15em;
+      margin: 2.5rem 0 1.2rem -2rem;
+      padding: .3rem .8rem;
+      background: var(--bg3);
+      border-radius: 2rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於蔻達</a></li>
+    <li><a href="timeline.html" class="active">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>📜 人生足跡</h1>
+  <p>蔻達一路走來的大小事</p>
+</div>
+
+<main>
+  <!-- 年份標籤 + 事件從這裡開始新增 -->
+  <!-- 範例：
+  <div class="tl-year-label">2023</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">2023 / 02 / 25</div>
+      <div class="tl-title">事件標題</div>
+      <div class="tl-desc">事件說明文字</div>
+    </div>
+  </div>
+  -->
+
+  <div class="placeholder-block">
+    <span class="icon">📜</span>
+    人生足跡內容待移入<br>
+    <span style="font-size:.78rem">從追思紀念會的時間軸整理後放入</span>
+  </div>
+</main>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+</body>
+</html>

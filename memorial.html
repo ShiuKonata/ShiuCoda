@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>追思紀念 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .memorial-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .memorial-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.8rem 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .memorial-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-dim);
+    }
+
+    .memorial-card .m-icon { font-size: 2.2rem; display: block; margin-bottom: .6rem; }
+    .memorial-card .m-name { font-size: .95rem; font-weight: 500; }
+    .memorial-card .m-desc { font-size: .75rem; color: var(--text-muted); margin-top: .3rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於蔻達</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html" class="active">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>🕯️ 追思紀念</h1>
+  <p>帶著思念，與蔻達再相聚</p>
+</div>
+
+<main>
+  <div class="memorial-sections">
+    <div class="memorial-card">
+      <span class="m-icon">🕯️</span>
+      <div class="m-name">點蠟燭</div>
+      <div class="m-desc">為蔻達點上一盞燭光</div>
+    </div>
+    <div class="memorial-card">
+      <span class="m-icon">🌸</span>
+      <div class="m-name">獻花</div>
+      <div class="m-desc">送上你最真誠的心意</div>
+    </div>
+    <div class="memorial-card">
+      <span class="m-icon">🏮</span>
+      <div class="m-name">掛燈籠</div>
+      <div class="m-desc">掛上一盞思念的燈</div>
+    </div>
+    <div class="memorial-card">
+      <span class="m-icon">💬</span>
+      <div class="m-name">留言牆</div>
+      <div class="m-desc">留下你想對蔻達說的話</div>
+    </div>
+  </div>
+
+  <div class="placeholder-block">
+    <span class="icon">🕯️</span>
+    追思紀念功能待移入<br>
+    <span style="font-size:.78rem">從 shiucoda.html 追思紀念會移植互動功能</span>
+  </div>
+</main>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+</body>
+</html>

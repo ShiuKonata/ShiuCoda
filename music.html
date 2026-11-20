@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>歌曲作品 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .tab-bar {
+      display: flex;
+      gap: .5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: .88rem;
+      color: var(--text-muted);
+      padding: .4rem .9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: var(--bg3);
+      color: var(--accent);
+    }
+
+    .song-list { display: flex; flex-direction: column; gap: .6rem; }
+
+    .song-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .6rem;
+      padding: .75rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s;
+    }
+
+    .song-row:hover { border-color: var(--accent-dim); }
+
+    .song-num {
+      font-size: .75rem;
+      color: var(--text-muted);
+      width: 1.5rem;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .song-thumb {
+      width: 48px; height: 48px;
+      border-radius: .3rem;
+      object-fit: cover;
+      background: var(--bg3);
+      flex-shrink: 0;
+    }
+
+    .song-info { flex: 1; min-width: 0; }
+
+    .song-title {
+      font-size: .9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-meta {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin-top: .2rem;
+    }
+
+    .song-badge {
+      font-size: .68rem;
+      padding: .15rem .5rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .song-badge.original { background: rgba(42,157,143,.1); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於蔻達</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html" class="active">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>🎵 歌曲作品</h1>
+  <p>原創曲與 Cover 完整收錄</p>
+</div>
+
+<main>
+  <div class="tab-bar">
+    <button class="tab-btn active">全部</button>
+    <button class="tab-btn">🎼 原創曲</button>
+    <button class="tab-btn">🎤 Cover</button>
+  </div>
+
+  <!-- 歌曲列表從這裡填入 -->
+  <!-- 範例：
+  <div class="song-list">
+    <a class="song-row" href="https://www.youtube.com/watch?v=影片ID" target="_blank">
+      <span class="song-num">1</span>
+      <img class="song-thumb" src="https://i.ytimg.com/vi/影片ID/mqdefault.jpg" alt="">
+      <div class="song-info">
+        <div class="song-title">曲名</div>
+        <div class="song-meta">2024 · 原創</div>
+      </div>
+      <span class="song-badge original">原創曲</span>
+    </a>
+  </div>
+  -->
+
+  <div class="placeholder-block">
+    <span class="icon">🎵</span>
+    歌曲列表待填入<br>
+    <span style="font-size:.78rem">從 data.js 整理原創曲與 Cover 資料後放入</span>
+  </div>
+</main>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+</body>
+</html>
