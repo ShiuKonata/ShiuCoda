@@ -477,7 +477,6 @@
   let currentFortune = null;
   let postMode = null;
   let drawing = false;
-  let sfxPlaying = false;
 
   /* ── 元素取用 ── */
   const gif     = document.getElementById('coda-mascot-gif');
@@ -519,43 +518,29 @@
     if (drawing) return;
     drawing = true;
 
-    /* 背景音樂降音 */
     if (window.codaMusic) window.codaMusic.duck();
-
     gif.classList.add('shaking');
     document.getElementById('coda-draw-hint').textContent = '搖籤中…';
 
-    setTimeout(function () {
+    var fortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+    var sfxDone = false, minDone = false;
+
+    /* 音效結束 + 最短動畫時間都到才顯示結果 */
+    function tryShow() {
+      if (!sfxDone || !minDone) return;
       gif.classList.remove('shaking');
-      currentFortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
-      showFortune(currentFortune);
+      currentFortune = fortune;
+      showFortune(fortune);
       drawing = false;
+      if (window.codaMusic) window.codaMusic.unduck();
+    }
 
-      /* 抽籤音效，結束後恢復背景音量並解鎖抽籤按鈕 */
-      sfxPlaying = true;
-      var sfx = new Audio('audio/sfx-draw.mp3');
-      sfx.volume = 0.85;
-      sfx.play().catch(function () {});
+    setTimeout(function () { minDone = true; tryShow(); }, 700);
 
-      var restored = false;
-      function restoreMusic() {
-        if (restored) return;
-        restored = true;
-        sfxPlaying = false;
-        if (window.codaMusic) window.codaMusic.unduck();
-        /* 若「再抽一次」已被按、按鈕正在等待中，解鎖它 */
-        var btn = document.getElementById('coda-draw-btn');
-        if (btn.style.display !== 'none') {
-          btn.disabled = false;
-          var hint = document.getElementById('coda-draw-hint');
-          if (hint.style.display !== 'none') {
-            hint.textContent = '點下方來抽一支籤吧！';
-          }
-        }
-      }
-      sfx.addEventListener('ended', restoreMusic);
-      setTimeout(restoreMusic, 4000);
-    }, 700);
+    var sfx = new Audio('audio/sfx-draw.mp3');
+    sfx.volume = 0.85;
+    sfx.addEventListener('ended', function () { sfxDone = true; tryShow(); }, { once: true });
+    sfx.play().catch(function () { sfxDone = true; tryShow(); });
   });
 
   function showFortune(f) {
@@ -573,10 +558,10 @@
     currentFortune = null;
     var btn = document.getElementById('coda-draw-btn');
     btn.style.display = '';
-    btn.disabled = sfxPlaying;
+    btn.disabled = false;
     var hint = document.getElementById('coda-draw-hint');
     hint.style.display = '';
-    hint.textContent = sfxPlaying ? '音效播放中，請稍候…' : '點下方來抽一支籤吧！';
+    hint.textContent = '點下方來抽一支籤吧！';
     document.getElementById('coda-result-area').classList.remove('show');
     drawing = false;
   }
