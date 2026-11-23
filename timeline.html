@@ -73,8 +73,15 @@
       user-select: none;
       scrollbar-width: thin;
       scrollbar-color: var(--border) transparent;
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
-      mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 1.5%, #000 98.5%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 1.5%, #000 98.5%, transparent);
+      /* 突破 main 的左右 padding，接近頁面邊緣 */
+      margin-left: -2rem;
+      margin-right: -2rem;
+    }
+
+    @media (max-width: 700px) {
+      .tl-h-outer { margin-left: -1.2rem; margin-right: -1.2rem; }
     }
 
     .tl-h-outer:active { cursor: grabbing; }
