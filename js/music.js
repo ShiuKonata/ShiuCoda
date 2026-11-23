@@ -7,6 +7,12 @@
   audio.loop = true;
   audio.volume = 0.35;
 
+  /* 供其他腳本呼叫的音量控制（抽籤音效用） */
+  window.codaMusic = {
+    duck:   function () { if (started && !muted) { audio.volume = 0.07; } },
+    unduck: function () { if (started && !muted) { audio.volume = 0.35; } }
+  };
+
   let started = false;
   let muted = false;
 

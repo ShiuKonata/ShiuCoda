@@ -517,6 +517,12 @@
     if (drawing) return;
     drawing = true;
 
+    /* 搖籤音效 + 背景音樂降音 */
+    var sfxShake = new Audio('audio/sfx-shake.mp3');
+    sfxShake.volume = 0.85;
+    sfxShake.play().catch(function () {});
+    if (window.codaMusic) window.codaMusic.duck();
+
     gif.classList.add('shaking');
     document.getElementById('coda-draw-hint').textContent = '搖籤中…';
 
@@ -525,6 +531,20 @@
       currentFortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
       showFortune(currentFortune);
       drawing = false;
+
+      /* 抽籤音效，結束後恢復背景音量 */
+      var sfxDraw = new Audio('audio/sfx-draw.mp3');
+      sfxDraw.volume = 0.85;
+      sfxDraw.play().catch(function () {});
+
+      var restored = false;
+      function restoreMusic() {
+        if (restored) return;
+        restored = true;
+        if (window.codaMusic) window.codaMusic.unduck();
+      }
+      sfxDraw.addEventListener('ended', restoreMusic);
+      setTimeout(restoreMusic, 4000); /* 保底 4 秒後恢復 */
     }, 700);
   });
 
