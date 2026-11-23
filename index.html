@@ -307,6 +307,117 @@
       white-space: nowrap;
     }
 
+    /* ── 口頭禪 ── */
+    .catchphrase-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+    }
+
+    .catchphrase {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: .45rem 1.1rem;
+      font-size: .9rem;
+      color: var(--text);
+      font-style: italic;
+      letter-spacing: .03em;
+    }
+
+    /* ── 小知識 ── */
+    .trivia-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1rem;
+    }
+
+    .trivia-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .8rem;
+      padding: 1rem 1.2rem;
+    }
+
+    .trivia-label {
+      font-size: .72rem;
+      color: var(--text-muted);
+      letter-spacing: .1em;
+      font-weight: 500;
+      margin-bottom: .65rem;
+    }
+
+    .trivia-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .trivia-tag {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: .2rem .7rem;
+      font-size: .78rem;
+      color: var(--text);
+    }
+
+    .trivia-color-swatch {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+    }
+
+    .color-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .hashtag-list {
+      display: flex;
+      flex-direction: column;
+      gap: .38rem;
+    }
+
+    .hashtag-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .hashtag-name {
+      font-size: .8rem;
+      color: var(--accent);
+      font-family: monospace;
+      letter-spacing: .02em;
+    }
+
+    .hashtag-type {
+      font-size: .66rem;
+      color: var(--text-muted);
+      background: var(--bg3);
+      border-radius: 2rem;
+      padding: .1rem .5rem;
+    }
+
+    .trivia-goal-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .42rem;
+    }
+
+    .trivia-goal-list li {
+      font-size: .82rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .span-wide { grid-column: span 2; }
+    @media (max-width: 500px) { .span-wide { grid-column: span 1; } }
+
     /* ── 其他頁面連結 ── */
     .pages-grid {
       display: grid;
@@ -446,6 +557,106 @@
       <div class="label">期別</div>
       <div class="value">一期生</div>
     </div>
+  </div>
+</section>
+
+<!-- ── 口頭禪 ── -->
+<section>
+  <h2 class="section-title">💬 口頭禪</h2>
+  <div class="catchphrase-list">
+    <span class="catchphrase">「窩跟ㄋ縮」</span>
+    <span class="catchphrase">「窩要嫁給妳」</span>
+    <span class="catchphrase">「瘋掉」</span>
+    <span class="catchphrase">「對簿幾」</span>
+    <span class="catchphrase">「窩給ㄋ跪」</span>
+  </div>
+</section>
+
+<!-- ── 小知識 ── -->
+<section>
+  <h2 class="section-title">💡 小知識</h2>
+  <div class="trivia-grid">
+
+    <div class="trivia-card">
+      <div class="trivia-label">代表色</div>
+      <div class="trivia-color-swatch">
+        <div class="color-dot" style="background:#B9C468"></div>
+        <span style="font-size:.85rem;font-family:monospace;color:var(--text)">#B9C468</span>
+      </div>
+    </div>
+
+    <div class="trivia-card span-wide">
+      <div class="trivia-label"># 主題標籤</div>
+      <div class="hashtag-list">
+        <div class="hashtag-row"><span class="hashtag-name">#c0dalive</span><span class="hashtag-type">Live</span></div>
+        <div class="hashtag-row"><span class="hashtag-name">#c0dart</span><span class="hashtag-type">FanArt</span></div>
+        <div class="hashtag-row"><span class="hashtag-name">#c0daddy</span><span class="hashtag-type">All</span></div>
+        <div class="hashtag-row"><span class="hashtag-name">#詩雨願違</span><span class="hashtag-type">Meme</span></div>
+        <div class="hashtag-row"><span class="hashtag-name">#c0dalala</span><span class="hashtag-type">Music</span></div>
+        <div class="hashtag-row"><span class="hashtag-name">#c0danude</span><span class="hashtag-type">R18</span></div>
+      </div>
+    </div>
+
+    <div class="trivia-card span-wide">
+      <div class="trivia-label">🎯 未來目標</div>
+      <ul class="trivia-goal-list">
+        <li>✦ 成為大家的桌布或被裱框</li>
+        <li>✦ 出原創歌曲、一堆周邊</li>
+        <li>✦ 帶給大家滿滿的能量</li>
+        <li>✦ 跟很多人合唱、連動</li>
+        <li>✦ 玩很多很多恐怖遊戲</li>
+        <li>✦ 得到很多政治獻金</li>
+      </ul>
+    </div>
+
+    <div class="trivia-card">
+      <div class="trivia-label">🎵 喜歡的樂團</div>
+      <div class="trivia-tags">
+        <span class="trivia-tag">擊沉女孩</span>
+        <span class="trivia-tag">海豚刑警</span>
+        <span class="trivia-tag">午夜乒乓</span>
+        <span class="trivia-tag">甜約翰</span>
+        <span class="trivia-tag">美秀集團</span>
+        <span class="trivia-tag">芒果醬</span>
+      </div>
+    </div>
+
+    <div class="trivia-card">
+      <div class="trivia-label">🎤 喜歡的歌手</div>
+      <div class="trivia-tags">
+        <span class="trivia-tag">Vaundy</span>
+        <span class="trivia-tag">acane</span>
+        <span class="trivia-tag">163</span>
+        <span class="trivia-tag">李浩偉</span>
+        <span class="trivia-tag">陳嫺靜</span>
+        <span class="trivia-tag">陳綺貞</span>
+      </div>
+    </div>
+
+    <div class="trivia-card">
+      <div class="trivia-label">🎨 喜歡的顏色</div>
+      <div class="trivia-tags">
+        <span class="trivia-tag">紫丁香色</span>
+      </div>
+    </div>
+
+    <div class="trivia-card">
+      <div class="trivia-label">🍴 喜歡的食物</div>
+      <div class="trivia-tags">
+        <span class="trivia-tag">Fun Tower 日式可麗餅</span>
+        <span class="trivia-tag">舒芙蕾</span>
+        <span class="trivia-tag">酸辣湯</span>
+        <span class="trivia-tag">薄荷巧克力冰淇淋</span>
+      </div>
+    </div>
+
+    <div class="trivia-card">
+      <div class="trivia-label">🚫 討厭的氣味</div>
+      <div class="trivia-tags">
+        <span class="trivia-tag">薰衣草</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
