@@ -193,6 +193,7 @@
     }
 
     #coda-draw-btn:hover { background: #1f7a6e; }
+    #coda-draw-btn:disabled { opacity: .5; cursor: default; background: #2a9d8f; }
 
     #coda-result-area { display: none; }
     #coda-result-area.show { display: block; animation: coda-box-in .3s ease; }
@@ -476,6 +477,7 @@
   let currentFortune = null;
   let postMode = null;
   let drawing = false;
+  let sfxPlaying = false;
 
   /* ── 元素取用 ── */
   const gif     = document.getElementById('coda-mascot-gif');
@@ -529,7 +531,8 @@
       showFortune(currentFortune);
       drawing = false;
 
-      /* 抽籤音效，結束後恢復背景音量 */
+      /* 抽籤音效，結束後恢復背景音量並解鎖抽籤按鈕 */
+      sfxPlaying = true;
       var sfx = new Audio('audio/sfx-draw.mp3');
       sfx.volume = 0.85;
       sfx.play().catch(function () {});
@@ -538,7 +541,17 @@
       function restoreMusic() {
         if (restored) return;
         restored = true;
+        sfxPlaying = false;
         if (window.codaMusic) window.codaMusic.unduck();
+        /* 若「再抽一次」已被按、按鈕正在等待中，解鎖它 */
+        var btn = document.getElementById('coda-draw-btn');
+        if (btn.style.display !== 'none') {
+          btn.disabled = false;
+          var hint = document.getElementById('coda-draw-hint');
+          if (hint.style.display !== 'none') {
+            hint.textContent = '點下方來抽一支籤吧！';
+          }
+        }
       }
       sfx.addEventListener('ended', restoreMusic);
       setTimeout(restoreMusic, 4000);
@@ -558,9 +571,12 @@
 
   function resetFortune() {
     currentFortune = null;
-    document.getElementById('coda-draw-btn').style.display = '';
-    document.getElementById('coda-draw-hint').style.display = '';
-    document.getElementById('coda-draw-hint').textContent = '點下方來抽一支籤吧！';
+    var btn = document.getElementById('coda-draw-btn');
+    btn.style.display = '';
+    btn.disabled = sfxPlaying;
+    var hint = document.getElementById('coda-draw-hint');
+    hint.style.display = '';
+    hint.textContent = sfxPlaying ? '音效播放中，請稍候…' : '點下方來抽一支籤吧！';
     document.getElementById('coda-result-area').classList.remove('show');
     drawing = false;
   }
