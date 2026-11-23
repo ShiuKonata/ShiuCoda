@@ -96,7 +96,8 @@
       left: 0; right: 0;
       top: 187px;
       height: 2px;
-      background: linear-gradient(90deg, transparent, var(--border) 2%, var(--border) 98%, transparent);
+      background: linear-gradient(90deg, transparent, var(--accent) 2%, var(--accent) 98%, transparent);
+      opacity: 0.45;
     }
 
     /* Each item is a 3-row grid: above-area | dot | below-area */
@@ -134,10 +135,11 @@
     .tl-h-node {
       grid-row: 2;
       grid-column: 1;
-      width: 10px; height: 10px;
+      width: 12px; height: 12px;
       border-radius: 50%;
       background: var(--accent);
-      border: 2px solid var(--bg);
+      border: 2.5px solid var(--bg);
+      box-shadow: 0 0 0 1.5px var(--accent);
       align-self: center;
       justify-self: center;
       position: relative;
