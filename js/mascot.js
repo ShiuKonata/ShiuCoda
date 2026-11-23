@@ -253,8 +253,8 @@
       font-family: inherit;
     }
 
-    /* ── 貼牆 modal ── */
-    #coda-post-modal {
+    /* ── 綁籤 modal ── */
+    #coda-slip-modal {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,.5);
@@ -265,57 +265,39 @@
       padding: 1rem;
     }
 
-    #coda-post-modal.hidden { display: none; }
+    #coda-slip-modal.hidden { display: none; }
 
-    #coda-post-box {
+    #coda-slip-box {
       background: #e6f4f0;
       border: 1px solid rgba(42,157,143,.2);
       border-radius: 1rem;
-      padding: 1.8rem;
+      padding: 1.6rem 1.4rem;
       width: 100%;
-      max-width: 380px;
+      max-width: 310px;
       font-family: 'Noto Sans TC', sans-serif;
       animation: coda-box-in .25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      text-align: center;
     }
 
-    #coda-post-title {
-      font-size: 1rem;
+    #coda-slip-title {
+      font-size: .88rem;
       font-weight: 500;
       color: #2a9d8f;
-      margin-bottom: 1rem;
+      letter-spacing: .15em;
     }
 
-    #coda-post-preview {
-      background: #d4ece4;
-      border: 1px solid rgba(42,157,143,.2);
-      border-radius: .5rem;
-      padding: .7rem .9rem;
-      margin-bottom: 1rem;
-      font-size: .8rem;
-      color: #4a7a6e;
+    #coda-slip-msg {
+      font-size: .84rem;
+      color: #1a3028;
+      line-height: 1.65;
     }
 
-    .coda-prev-level {
-      font-weight: 700;
-      font-size: .95rem;
-      display: inline-block;
-      padding: .12rem .55rem;
-      border-radius: 2rem;
-      border: 1px solid;
-      margin-bottom: .3rem;
-    }
+    #coda-slip-btns { display: flex; gap: .6rem; justify-content: center; }
 
-    .coda-form-group { margin-bottom: .75rem; }
-
-    .coda-form-label {
-      display: block;
-      font-size: .72rem;
-      color: #4a7a6e;
-      margin-bottom: .3rem;
-      letter-spacing: .05em;
-    }
-
-    .coda-form-input, .coda-form-textarea {
+    .coda-form-input {
       width: 100%;
       background: #d4ece4;
       border: 1px solid rgba(42,157,143,.2);
@@ -329,44 +311,7 @@
       box-sizing: border-box;
     }
 
-    .coda-form-input:focus, .coda-form-textarea:focus { border-color: #2a9d8f; }
-    .coda-form-textarea { resize: none; height: 68px; }
-
-    .coda-char-count {
-      text-align: right;
-      font-size: .68rem;
-      color: #4a7a6e;
-      margin-top: .15rem;
-    }
-
-    #coda-post-actions { display: flex; gap: .6rem; margin-top: 1rem; }
-
-    #coda-submit-btn {
-      flex: 1;
-      background: #2a9d8f;
-      color: #fff;
-      border: none;
-      border-radius: 2rem;
-      padding: .6rem;
-      font-family: inherit;
-      font-size: .85rem;
-      cursor: pointer;
-      transition: background .2s;
-    }
-
-    #coda-submit-btn:hover { background: #1f7a6e; }
-    #coda-submit-btn:disabled { opacity: .6; cursor: default; }
-
-    #coda-cancel-btn {
-      background: none;
-      border: 1px solid rgba(42,157,143,.2);
-      border-radius: 2rem;
-      padding: .6rem 1rem;
-      font-family: inherit;
-      font-size: .85rem;
-      color: #4a7a6e;
-      cursor: pointer;
-    }
+    .coda-form-input:focus { border-color: #2a9d8f; }
 
     /* ── 喝水 popup ── */
     #coda-drink-popup {
@@ -433,32 +378,20 @@
           <div id="coda-result-level"></div>
           <div id="coda-result-text"></div>
           <div id="coda-result-actions">
-            <button class="coda-action-btn coda-btn-named" id="coda-btn-named">✍️ 留名上牆</button>
-            <button class="coda-action-btn coda-btn-anon"  id="coda-btn-anon">🎭 匿名上牆</button>
-            <button class="coda-action-btn coda-btn-skip"  id="coda-btn-skip">跳過</button>
+            <button class="coda-action-btn coda-btn-named" id="coda-btn-bind">🎋 綁到籤牆</button>
+            <button class="coda-action-btn coda-btn-skip"  id="coda-btn-skip">算了</button>
           </div>
           <button id="coda-draw-again">再抽一次</button>
         </div>
       </div>
     </div>
 
-    <div id="coda-post-modal" class="hidden">
-      <div id="coda-post-box">
-        <div id="coda-post-title">🧧 貼到籤運牆</div>
-        <div id="coda-post-preview"></div>
-        <div class="coda-form-group" id="coda-name-group">
-          <label class="coda-form-label">你的名字</label>
-          <input class="coda-form-input" id="coda-post-name" type="text" placeholder="呱民小花" maxlength="20">
-        </div>
-        <div class="coda-form-group">
-          <label class="coda-form-label">留言給蔻達（最多 30 字）</label>
-          <textarea class="coda-form-textarea" id="coda-post-msg" placeholder="寫下你想說的話…" maxlength="30"></textarea>
-          <div class="coda-char-count"><span id="coda-char-count">0</span> / 30</div>
-        </div>
-        <div id="coda-post-actions">
-          <button id="coda-submit-btn">貼上籤運牆 🎋</button>
-          <button id="coda-cancel-btn">取消</button>
-        </div>
+    <div id="coda-slip-modal" class="hidden">
+      <div id="coda-slip-box">
+        <div id="coda-slip-title">✦ 綁籤 ✦</div>
+        <div id="coda-slip-msg"></div>
+        <input class="coda-form-input" id="coda-slip-name" type="text" placeholder="呱民小花" maxlength="20">
+        <div id="coda-slip-btns"></div>
       </div>
     </div>
 
@@ -475,14 +408,13 @@
   /* ── 狀態 ── */
   let menuOpen = false;
   let currentFortune = null;
-  let postMode = null;
   let drawing = false;
 
   /* ── 元素取用 ── */
-  const gif     = document.getElementById('coda-mascot-gif');
-  const menu    = document.getElementById('coda-mascot-menu');
-  const overlay = document.getElementById('coda-fortune-overlay');
-  const postModal = document.getElementById('coda-post-modal');
+  const gif       = document.getElementById('coda-mascot-gif');
+  const menu      = document.getElementById('coda-mascot-menu');
+  const overlay   = document.getElementById('coda-fortune-overlay');
+  const slipModal = document.getElementById('coda-slip-modal');
   const drinkPopup = document.getElementById('coda-drink-popup');
 
   /* ── 選單開關 ── */
@@ -572,68 +504,80 @@
     overlay.classList.add('hidden');
   });
 
-  document.getElementById('coda-btn-named').addEventListener('click', function () {
-    openPost('named');
+  document.getElementById('coda-btn-bind').addEventListener('click', function () {
+    openSlipStep1();
   });
 
-  document.getElementById('coda-btn-anon').addEventListener('click', function () {
-    openPost('anon');
-  });
-
-  /* ── 貼牆 modal ── */
-  function openPost(mode) {
-    postMode = mode;
+  /* ── 綁籤 dialog（二步驟，同追思會）── */
+  function openSlipStep1() {
     var f = currentFortune;
-    document.getElementById('coda-name-group').style.display = mode === 'named' ? 'block' : 'none';
-    document.getElementById('coda-post-name').value = '';
-    document.getElementById('coda-post-msg').value = '';
-    document.getElementById('coda-char-count').textContent = '0';
-    document.getElementById('coda-post-preview').innerHTML =
-      '<span class="coda-prev-level ' + f.cls + '">' + f.level + '</span><br>' +
-      '<span style="font-size:.72rem;color:#4a7a6e">第' + f.num + '籤</span>';
-    postModal.classList.remove('hidden');
+    document.getElementById('coda-slip-title').textContent = '✦ 綁籤 ✦';
+    document.getElementById('coda-slip-msg').textContent = '要將這支「' + f.level + '」籤綁到籤牆嗎？';
+    document.getElementById('coda-slip-name').style.display = 'none';
+    document.getElementById('coda-slip-name').value = '';
+
+    var btns = document.getElementById('coda-slip-btns');
+    btns.innerHTML = '';
+    var yes = document.createElement('button');
+    yes.className = 'coda-action-btn coda-btn-named';
+    yes.textContent = '✦ 綁上去！';
+    var no = document.createElement('button');
+    no.className = 'coda-action-btn coda-btn-skip';
+    no.textContent = '算了';
+    yes.onclick = openSlipStep2;
+    no.onclick = closeSlipModal;
+    btns.appendChild(yes);
+    btns.appendChild(no);
+
+    slipModal.classList.remove('hidden');
     overlay.classList.add('hidden');
   }
 
-  document.getElementById('coda-post-msg').addEventListener('input', function () {
-    document.getElementById('coda-char-count').textContent = this.value.length;
-  });
+  function openSlipStep2() {
+    document.getElementById('coda-slip-msg').textContent = '要在籤上留下名字嗎？（選填）';
+    var nameEl = document.getElementById('coda-slip-name');
+    nameEl.style.display = 'block';
+    nameEl.focus();
 
-  document.getElementById('coda-cancel-btn').addEventListener('click', function () {
-    postModal.classList.add('hidden');
-    overlay.classList.remove('hidden');
-  });
+    var btns = document.getElementById('coda-slip-btns');
+    btns.innerHTML = '';
+    var confirm = document.createElement('button');
+    confirm.className = 'coda-action-btn coda-btn-named';
+    confirm.textContent = '確認';
+    var anon = document.createElement('button');
+    anon.className = 'coda-action-btn coda-btn-skip';
+    anon.textContent = '匿名';
+    confirm.onclick = function () {
+      submitSlip(document.getElementById('coda-slip-name').value.trim() || '匿名呱民');
+    };
+    anon.onclick = function () { submitSlip('匿名呱民'); };
+    btns.appendChild(confirm);
+    btns.appendChild(anon);
+  }
 
-  document.getElementById('coda-submit-btn').addEventListener('click', async function () {
+  async function submitSlip(name) {
+    closeSlipModal();
     var f = currentFortune;
-    var name = postMode === 'named'
-      ? (document.getElementById('coda-post-name').value.trim() || '匿名呱民')
-      : '匿名呱民';
-    var msg = document.getElementById('coda-post-msg').value.trim();
-
-    var btn = this;
-    btn.textContent = '送出中…';
-    btn.disabled = true;
-
     try {
       await fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({
           action: 'addFortune',
           num: f.num, level: f.level, cls: f.cls, text: f.text,
-          name: name, message: msg,
+          name: name, message: '',
           date: new Date().toLocaleDateString('zh-TW')
         })
       });
-      postModal.classList.add('hidden');
-      overlay.classList.add('hidden');
       if (typeof window.loadWall === 'function') window.loadWall();
-    } catch (err) {
-      alert('送出失敗，請稍後再試');
-    }
+    } catch (e) {}
+  }
 
-    btn.textContent = '貼上籤運牆 🎋';
-    btn.disabled = false;
+  function closeSlipModal() {
+    slipModal.classList.add('hidden');
+  }
+
+  slipModal.addEventListener('click', function (e) {
+    if (e.target === slipModal) closeSlipModal();
   });
 
   /* ── 喝水 ── */

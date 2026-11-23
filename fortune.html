@@ -14,68 +14,6 @@
     .fl-reverse { color:#9b59b6; background:rgba(155,89,182,.12); border-color:rgba(155,89,182,.3); }
     .fl-low     { color:#c0392b; background:rgba(192,57,43,.12);  border-color:rgba(192,57,43,.3); }
 
-    .wall-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem;
-    }
-
-    .wall-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: .8rem;
-      padding: 1.1rem 1.2rem;
-      display: flex;
-      flex-direction: column;
-      gap: .5rem;
-    }
-
-    .card-level {
-      display: inline-block;
-      font-size: .8rem;
-      font-weight: 700;
-      padding: .15rem .6rem;
-      border-radius: 2rem;
-      border: 1px solid;
-      width: fit-content;
-    }
-
-    .card-num  { font-size: .7rem; color: var(--text-muted); margin-top: -.3rem; }
-
-    .card-poem {
-      font-size: .78rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      border-left: 2px solid var(--border);
-      padding-left: .6rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-divider { height: 1px; background: var(--border); }
-
-    .card-message { font-size: .85rem; color: var(--text); line-height: 1.5; }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: .2rem;
-    }
-
-    .card-name { font-size: .75rem; color: var(--accent); }
-    .card-date { font-size: .68rem; color: var(--text-muted); }
-
-    .wall-empty, .wall-loading {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-muted);
-      font-size: .88rem;
-    }
-
     .wall-header {
       display: flex;
       align-items: center;
@@ -91,6 +29,65 @@
     }
 
     .wall-count { font-size: .78rem; color: var(--text-muted); }
+
+    .wall-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: .6rem;
+    }
+
+    .wall-cell {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: .9rem .7rem .75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .28rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .15s, background .15s;
+      user-select: none;
+    }
+
+    .wall-cell:hover { border-color: var(--accent-dim); background: var(--bg3); }
+
+    .cell-level {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: .15rem .55rem;
+      border-radius: 2rem;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .cell-num { font-size: .62rem; color: var(--text-muted); }
+
+    .cell-cnt {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
+      margin-top: .1rem;
+    }
+
+    .cell-unit { font-size: .68rem; font-weight: 300; color: var(--text-muted); }
+
+    .cell-hint {
+      font-size: .64rem;
+      color: var(--text-muted);
+      min-height: 1.5em;
+    }
+
+    .wall-empty, .wall-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: .88rem;
+    }
   </style>
 </head>
 <body style="--page-bg: url('/ShiuCoda/images/banners/fortune-banner.webp')">
@@ -132,31 +129,71 @@
 <script>
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMU_Rlt_17DCzQQhdrr1atIwtW_akrDAanUIpGg3-5xdJ-IUU2ZZevua7yEO_erD2R/exec';
 
+  const FORTUNE_ORDER = [
+    {num:'一',   level:'大大吉',         cls:'fl-top'},
+    {num:'二',   level:'大吉',           cls:'fl-top'},
+    {num:'三',   level:'向大吉',         cls:'fl-top'},
+    {num:'四',   level:'末大吉',         cls:'fl-top'},
+    {num:'五',   level:'吉凶未分末大吉', cls:'fl-good'},
+    {num:'六',   level:'吉',             cls:'fl-good'},
+    {num:'七',   level:'中吉',           cls:'fl-good'},
+    {num:'八',   level:'小吉',           cls:'fl-good'},
+    {num:'九',   level:'後吉',           cls:'fl-good'},
+    {num:'十',   level:'末吉',           cls:'fl-good'},
+    {num:'十一', level:'吉凶不分末吉',   cls:'fl-mixed'},
+    {num:'十二', level:'吉凶相交末吉',   cls:'fl-mixed'},
+    {num:'十三', level:'吉凶相半',       cls:'fl-mixed'},
+    {num:'十四', level:'吉凶相央',       cls:'fl-mixed'},
+    {num:'十五', level:'小凶後吉',       cls:'fl-reverse'},
+    {num:'十六', level:'凶後吉',         cls:'fl-reverse'},
+    {num:'十七', level:'凶後大吉',       cls:'fl-reverse'},
+    {num:'十八', level:'凶',             cls:'fl-low'},
+    {num:'十九', level:'大凶',           cls:'fl-low'},
+  ];
+
+  let wallGroups = {};
+
   async function loadWall() {
     const grid = document.getElementById('wall-grid');
-    grid.innerHTML = '<div class="wall-loading">載入中…</div>';
     try {
       const res = await fetch(SCRIPT_URL + '?action=getFortunes');
       const data = await res.json();
-      if (!data.length) {
-        grid.innerHTML = '<div class="wall-empty">還沒有人貼上籤運牆，你來第一個！</div>';
-        document.getElementById('wall-count').textContent = '';
-        return;
+
+      FORTUNE_ORDER.forEach(f => { wallGroups[f.level] = { count: 0, names: [] }; });
+      if (Array.isArray(data)) {
+        data.forEach(d => {
+          if (wallGroups[d.level]) {
+            wallGroups[d.level].count++;
+            if (d.name && d.name !== '匿名呱民') wallGroups[d.level].names.push(d.name);
+          }
+        });
       }
-      document.getElementById('wall-count').textContent = '共 ' + data.length + ' 張';
-      grid.innerHTML = data.slice().reverse().map(d => `
-        <div class="wall-card">
-          <span class="card-level ${d.cls}">${d.level}</span>
-          <span class="card-num">第${d.num}籤</span>
-          <div class="card-poem">${d.text}</div>
-          ${d.message ? `<div class="card-divider"></div><div class="card-message">「${d.message}」</div>` : ''}
-          <div class="card-footer">
-            <span class="card-name">— ${d.name}</span>
-            <span class="card-date">${d.date}</span>
-          </div>
-        </div>
-      `).join('');
-    } catch (err) {
+
+      const total = Object.values(wallGroups).reduce((s, g) => s + g.count, 0);
+      document.getElementById('wall-count').textContent = total ? '共 ' + total + ' 張' : '';
+
+      grid.innerHTML = FORTUNE_ORDER.map(f => {
+        const g = wallGroups[f.level];
+        return '<div class="wall-cell" data-level="' + f.level + '">' +
+          '<span class="cell-level ' + f.cls + '">' + f.level + '</span>' +
+          '<span class="cell-num">第' + f.num + '籤</span>' +
+          '<div class="cell-cnt">' + g.count + '<span class="cell-unit"> 張</span></div>' +
+          '<div class="cell-hint">' + (g.count > 0 ? '點一下看看' : '—') + '</div>' +
+          '</div>';
+      }).join('');
+
+      grid.querySelectorAll('.wall-cell').forEach(function(cell) {
+        cell.addEventListener('click', function() {
+          const level = cell.dataset.level;
+          const g = wallGroups[level];
+          const hint = cell.querySelector('.cell-hint');
+          if (!g.count) return;
+          if (!g.names.length) { hint.textContent = '籤上沒有留名'; return; }
+          const name = g.names[Math.floor(Math.random() * g.names.length)];
+          hint.textContent = '✦ ' + name;
+        });
+      });
+    } catch (e) {
       grid.innerHTML = '<div class="wall-empty">籤運牆暫時無法載入</div>';
     }
   }
