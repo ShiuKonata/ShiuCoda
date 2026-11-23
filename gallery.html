@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回憶牆 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    /* ── 分類 Tabs ── */
+    .gallery-tabs {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+      align-items: center;
+    }
+
+    .gallery-tab {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: .4rem 1.2rem;
+      font-family: inherit;
+      font-size: .88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .gallery-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .gallery-tab:hover:not(.active) {
+      background: var(--bg3);
+      color: var(--text);
+    }
+
+    .gallery-count {
+      margin-left: auto;
+      font-size: .75rem;
+      color: var(--text-muted);
+    }
+
+    /* ── 瀑布流 ── */
+    .masonry {
+      columns: 4;
+      column-gap: .9rem;
+    }
+
+    @media (max-width: 1000px) { .masonry { columns: 3; } }
+    @media (max-width: 680px)  { .masonry { columns: 2; } }
+    @media (max-width: 420px)  { .masonry { columns: 1; } }
+
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: .9rem;
+      border-radius: .6rem;
+      overflow: hidden;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      display: block;
+    }
+
+    .masonry-item.hidden { display: none; }
+
+    .masonry-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    }
+
+    .masonry-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .masonry-caption {
+      padding: .55rem .75rem .65rem;
+    }
+
+    .masonry-caption-title {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .masonry-caption-date {
+      font-size: .68rem;
+      color: var(--text-muted);
+      margin-top: .15rem;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,.85);
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: min(90vw, 900px);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 78vh;
+      border-radius: .8rem;
+      object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+
+    .lightbox-caption {
+      margin-top: .8rem;
+      color: #fff;
+      font-size: .85rem;
+      text-align: center;
+      opacity: .85;
+    }
+
+    .lightbox-date {
+      font-size: .72rem;
+      opacity: .55;
+      margin-top: .2rem;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -2.4rem;
+      right: 0;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: .7;
+      transition: opacity .15s;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+
+    .lightbox-close:hover { opacity: 1; }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      background: rgba(0,0,0,.35);
+      border: none;
+      border-radius: 50%;
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+      user-select: none;
+    }
+
+    .lightbox-nav:hover { background: rgba(0,0,0,.65); }
+    .lightbox-prev { left: -3.2rem; }
+    .lightbox-next { right: -3.2rem; }
+
+    @media (max-width: 600px) {
+      .lightbox-prev { left: .4rem; }
+      .lightbox-next { right: .4rem; }
+    }
+  </style>
+</head>
+<body style="--page-bg: url('/ShiuCoda/images/banners/gallery-banner.jpg')">
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於蔻達</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="gallery.html" class="active">回憶牆</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>🖼️ 回憶牆 🖼️</h1>
+    <p>女兒Coda 留下的每一個瞬間</p>
+  </div>
+</div>
+
+<main>
+  <div class="gallery-tabs">
+    <button class="gallery-tab active" data-cat="all">全部</button>
+    <button class="gallery-tab" data-cat="live">直播截圖</button>
+    <button class="gallery-tab" data-cat="art">插畫 / 繪圖</button>
+    <button class="gallery-tab" data-cat="event">活動 / 線下</button>
+    <button class="gallery-tab" data-cat="merch">周邊</button>
+    <button class="gallery-tab" data-cat="other">其他</button>
+    <span class="gallery-count"></span>
+  </div>
+
+  <div class="masonry" id="masonryGrid">
+    <!-- ════════════════════════════════════════
+         新增圖片範例：
+         複製下方 <div> 區塊，修改以下欄位：
+           data-cat  = live | art | event | merch | other
+           src       = /ShiuCoda/images/gallery/你的檔名.jpg
+           data-title = 圖片標題（顯示在燈箱）
+           data-date  = 日期（顯示在燈箱與卡片）
+           .masonry-caption-title 文字 = 卡片標題（可與 data-title 相同）
+         ════════════════════════════════════════ -->
+
+    <!-- 範例（隱藏，取消 hidden 即可顯示）：
+    <div class="masonry-item" data-cat="live" data-title="初配信" data-date="2023.02.25">
+      <img src="/ShiuCoda/images/gallery/example.jpg" alt="初配信">
+      <div class="masonry-caption">
+        <div class="masonry-caption-title">初配信</div>
+        <div class="masonry-caption-date">2023.02.25</div>
+      </div>
+    </div>
+    -->
+
+  </div>
+
+  <div class="placeholder-block" id="emptyMsg">
+    <span class="icon">🖼️</span>
+    還沒有照片喔<br>
+    <span style="font-size:.78rem">把圖片放入 images/gallery/ 後新增到 gallery.html</span>
+  </div>
+</main>
+
+<!-- ── Lightbox ── -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lbClose">✕</button>
+    <button class="lightbox-nav lightbox-prev" id="lbPrev">‹</button>
+    <img class="lightbox-img" id="lbImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" id="lbNext">›</button>
+    <div class="lightbox-caption" id="lbTitle"></div>
+    <div class="lightbox-date" id="lbDate"></div>
+  </div>
+</div>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+<script src="js/mascot.js"></script>
+<script src="js/music.js"></script>
+<script>
+(function () {
+  var tabs    = document.querySelectorAll('.gallery-tab');
+  var items   = document.querySelectorAll('.masonry-item');
+  var countEl = document.querySelector('.gallery-count');
+  var emptyEl = document.getElementById('emptyMsg');
+
+  /* ── 分類過濾 ── */
+  function filter(cat) {
+    var visible = 0;
+    items.forEach(function (item) {
+      var show = cat === 'all' || item.dataset.cat === cat;
+      item.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    if (countEl) countEl.textContent = visible > 0 ? '共 ' + visible + ' 張' : '';
+    if (emptyEl) emptyEl.style.display = visible === 0 ? '' : 'none';
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      filter(tab.dataset.cat);
+    });
+  });
+
+  filter('all');
+
+  /* ── Lightbox ── */
+  var lb      = document.getElementById('lightbox');
+  var lbImg   = document.getElementById('lbImg');
+  var lbTitle = document.getElementById('lbTitle');
+  var lbDate  = document.getElementById('lbDate');
+  var lbClose = document.getElementById('lbClose');
+  var lbPrev  = document.getElementById('lbPrev');
+  var lbNext  = document.getElementById('lbNext');
+  var current = -1;
+  var visibleItems = [];
+
+  function openLightbox(idx) {
+    visibleItems = Array.from(items).filter(function (i) {
+      return !i.classList.contains('hidden');
+    });
+    if (!visibleItems.length) return;
+    current = idx;
+    var item = visibleItems[current];
+    var img  = item.querySelector('img');
+    lbImg.src    = img ? img.src : '';
+    lbTitle.textContent = item.dataset.title || '';
+    lbDate.textContent  = item.dataset.date  || '';
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+
+  function prev() { openLightbox((current - 1 + visibleItems.length) % visibleItems.length); }
+  function next() { openLightbox((current + 1) % visibleItems.length); }
+
+  items.forEach(function (item, i) {
+    item.addEventListener('click', function () {
+      var vis = Array.from(items).filter(function (it) {
+        return !it.classList.contains('hidden');
+      });
+      openLightbox(vis.indexOf(item));
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lbPrev.addEventListener('click',  function (e) { e.stopPropagation(); prev(); });
+  lbNext.addEventListener('click',  function (e) { e.stopPropagation(); next(); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) closeLightbox(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+  });
+})();
+</script>
+</body>
+</html>
