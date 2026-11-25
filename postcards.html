@@ -518,14 +518,16 @@
       .replace(/\n/g,'<br>');
   }
 
-  // ── 送出至 GAS ──
+  // ── 送出至 GAS（no-cors 繞過 redirect）──
   async function saveCard(card) {
-    const res = await fetch(SCRIPT_URL, {
+    await fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action: 'addPostcard', ...card })
     });
-    const result = await res.json();
-    if (result.status !== 'ok') throw new Error(result.msg || 'error');
+    // no-cors 無法讀取回應，等 GAS 處理完再 reload
+    await new Promise(r => setTimeout(r, 1500));
   }
 
   // ── 背景選擇器 ──
@@ -585,7 +587,7 @@
     try {
       await saveCard({ bg: selectedBg, stamp, msg, name, date });
       closeModal();
-      renderWall();
+      await renderWall();
     } catch {
       alert('送出失敗，請稍後再試');
     } finally {
