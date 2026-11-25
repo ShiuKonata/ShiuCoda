@@ -159,12 +159,14 @@
       const res = await fetch(SCRIPT_URL + '?action=getFortunes');
       const data = await res.json();
 
-      FORTUNE_ORDER.forEach(f => { wallGroups[f.level] = { count: 0, names: [] }; });
+      FORTUNE_ORDER.forEach(f => { wallGroups[f.level] = { count: 0, entries: [] }; });
       if (Array.isArray(data)) {
         data.forEach(d => {
           if (wallGroups[d.level]) {
             wallGroups[d.level].count++;
-            if (d.name && d.name !== '匿名呱民') wallGroups[d.level].names.push(d.name);
+            if (d.name && d.name !== '匿名呱民') {
+              wallGroups[d.level].entries.push({ name: d.name, category: d.category || '' });
+            }
           }
         });
       }
@@ -188,9 +190,9 @@
           const g = wallGroups[level];
           const hint = cell.querySelector('.cell-hint');
           if (!g.count) return;
-          if (!g.names.length) { hint.textContent = '籤上沒有留名'; return; }
-          const name = g.names[Math.floor(Math.random() * g.names.length)];
-          hint.textContent = '✦ ' + name;
+          if (!g.entries.length) { hint.textContent = '籤上沒有留名'; return; }
+          const entry = g.entries[Math.floor(Math.random() * g.entries.length)];
+          hint.textContent = '✦ ' + entry.name + (entry.category ? '　求' + entry.category : '');
         });
       });
     } catch (e) {

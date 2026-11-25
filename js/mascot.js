@@ -313,6 +313,37 @@
 
     .coda-form-input:focus { border-color: #2a9d8f; }
 
+    /* ── 求籤類別選擇 ── */
+    #coda-category-area { margin-bottom: .6rem; }
+    #coda-category-hint { font-size: .82rem; color: #4a7a6e; margin-bottom: .7rem; letter-spacing: .05em; }
+    #coda-category-area.hidden { display: none; }
+    #coda-category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: .35rem;
+    }
+    .coda-cat-btn {
+      background: #d4ece4;
+      border: 1px solid rgba(42,157,143,.2);
+      border-radius: .5rem;
+      padding: .45rem .5rem;
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: .78rem;
+      color: #1a3028;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+      text-align: center;
+    }
+    .coda-cat-btn:hover { background: rgba(42,157,143,.2); border-color: rgba(42,157,143,.4); }
+    .coda-cat-btn.selected { background: #2a9d8f; color: #fff; border-color: #2a9d8f; }
+    #coda-selected-cat {
+      font-size: .78rem;
+      color: #2a9d8f;
+      margin-bottom: .5rem;
+      min-height: 1.3em;
+      font-weight: 500;
+    }
+
     /* ── 喝水 popup ── */
     #coda-drink-popup {
       position: fixed;
@@ -371,8 +402,24 @@
     <div id="coda-fortune-overlay" class="hidden">
       <div id="coda-fortune-box">
         <button id="coda-close-fortune" title="關閉">✕</button>
-        <div id="coda-draw-hint">點下方來抽一支籤吧！</div>
-        <button id="coda-draw-btn">🎋 搖籤</button>
+        <div id="coda-category-area">
+          <div id="coda-category-hint">✦ 請選擇求籤項目 ✦</div>
+          <div id="coda-category-grid">
+            <button class="coda-cat-btn" data-cat="💰 財運">💰 財運</button>
+            <button class="coda-cat-btn" data-cat="💼 事業">💼 事業</button>
+            <button class="coda-cat-btn" data-cat="💕 愛情">💕 愛情</button>
+            <button class="coda-cat-btn" data-cat="📚 學業">📚 學業</button>
+            <button class="coda-cat-btn" data-cat="🏥 健康">🏥 健康</button>
+            <button class="coda-cat-btn" data-cat="👨‍👩‍👧 家庭">👨‍👩‍👧 家庭</button>
+            <button class="coda-cat-btn" data-cat="🤝 人際關係">🤝 人際關係</button>
+            <button class="coda-cat-btn" data-cat="✈️ 旅行平安">✈️ 旅行平安</button>
+            <button class="coda-cat-btn" data-cat="🌟 心想事成">🌟 心想事成</button>
+            <button class="coda-cat-btn" data-cat="🎯 競技運">🎯 競技運</button>
+          </div>
+        </div>
+        <div id="coda-selected-cat"></div>
+        <div id="coda-draw-hint" style="display:none"></div>
+        <button id="coda-draw-btn" style="display:none">🎋 搖籤</button>
         <div id="coda-result-area">
           <div id="coda-result-num"></div>
           <div id="coda-result-level"></div>
@@ -409,6 +456,7 @@
   let menuOpen = false;
   let currentFortune = null;
   let drawing = false;
+  let selectedCategory = '';
 
   /* ── 元素取用 ── */
   const gif       = document.getElementById('coda-mascot-gif');
@@ -444,6 +492,21 @@
 
   overlay.addEventListener('click', function (e) {
     if (e.target === overlay) overlay.classList.add('hidden');
+  });
+
+  /* ── 類別選擇 ── */
+  document.getElementById('coda-category-grid').querySelectorAll('.coda-cat-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.coda-cat-btn').forEach(function (b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      selectedCategory = btn.dataset.cat;
+      document.getElementById('coda-category-area').classList.add('hidden');
+      document.getElementById('coda-selected-cat').textContent = '求籤項目：' + selectedCategory;
+      var drawHint = document.getElementById('coda-draw-hint');
+      drawHint.style.display = '';
+      drawHint.textContent = '點下方來抽一支籤吧！';
+      document.getElementById('coda-draw-btn').style.display = '';
+    });
   });
 
   document.getElementById('coda-draw-btn').addEventListener('click', function () {
@@ -488,14 +551,15 @@
 
   function resetFortune() {
     currentFortune = null;
-    var btn = document.getElementById('coda-draw-btn');
-    btn.style.display = '';
-    btn.disabled = false;
-    var hint = document.getElementById('coda-draw-hint');
-    hint.style.display = '';
-    hint.textContent = '點下方來抽一支籤吧！';
-    document.getElementById('coda-result-area').classList.remove('show');
+    selectedCategory = '';
     drawing = false;
+    document.querySelectorAll('.coda-cat-btn').forEach(function (b) { b.classList.remove('selected'); });
+    document.getElementById('coda-category-area').classList.remove('hidden');
+    document.getElementById('coda-selected-cat').textContent = '';
+    document.getElementById('coda-draw-btn').style.display = 'none';
+    document.getElementById('coda-draw-btn').disabled = false;
+    document.getElementById('coda-draw-hint').style.display = 'none';
+    document.getElementById('coda-result-area').classList.remove('show');
   }
 
   document.getElementById('coda-draw-again').addEventListener('click', resetFortune);
@@ -512,7 +576,7 @@
   function openSlipStep1() {
     var f = currentFortune;
     document.getElementById('coda-slip-title').textContent = '✦ 綁籤 ✦';
-    document.getElementById('coda-slip-msg').textContent = '要將這支「' + f.level + '」籤綁到籤牆嗎？';
+    document.getElementById('coda-slip-msg').textContent = '要將這支「' + f.level + '」籤（求' + selectedCategory + '）綁到籤牆嗎？';
     document.getElementById('coda-slip-name').style.display = 'none';
     document.getElementById('coda-slip-name').value = '';
 
@@ -562,7 +626,7 @@
       var params = new URLSearchParams({
         action: 'addFortune',
         num: f.num, level: f.level, cls: f.cls, text: f.text,
-        name: name, message: ''
+        name: name, message: '', category: selectedCategory
       });
       await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
       if (typeof window.loadWall === 'function') setTimeout(window.loadWall, 1500);
