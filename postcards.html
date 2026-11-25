@@ -444,37 +444,37 @@
 
   const isAdmin = new URLSearchParams(location.search).has('admin');
 
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMU_Rlt_17DCzQQhdrr1atIwtW_akrDAanUIpGg3-5xdJ-IUU2ZZevua7yEO_erD2R/exec';
   const BG_PATH    = 'images/postcards/postcards/';
   const STAMP_PATH = 'images/postcards/Postage/';
-  const STAMP_COUNT = 4;
   const BG_OPTIONS = ['01','02','03','04','05'];
-
-  // 背景方向（決定 portrait class）
   const BG_PORTRAIT = new Set(['02','04']);
 
   let selectedBg = '01';
 
   // ── 瀑布流渲染 ──
-  function renderWall() {
+  async function renderWall() {
     const wall = document.getElementById('postcards-wall');
-    const cards = getCards();
-    if (!cards.length) {
-      wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
-      return;
-    }
-    wall.innerHTML = cards.map((c, i) => buildCard(c, i)).join('');
-
-    if (isAdmin) {
-      wall.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const idx = parseInt(btn.dataset.idx);
-          const cards = getCards();
-          cards.splice(idx, 1);
-          localStorage.setItem('shiucoda_postcards', JSON.stringify(cards));
-          renderWall();
+    wall.innerHTML = '<div class="wall-empty">載入中…</div>';
+    try {
+      const res  = await fetch(SCRIPT_URL + '?action=getPostcards');
+      const cards = await res.json();
+      if (!Array.isArray(cards) || !cards.length) {
+        wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
+        return;
+      }
+      wall.innerHTML = cards.map((c, i) => buildCard(c, i)).join('');
+      if (isAdmin) {
+        wall.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            if (!confirm('確定刪除這張明信片？\n（需手動至 Google Sheet 刪除對應列）')) return;
+            btn.closest('.postcard').remove();
+          });
         });
-      });
+      }
+    } catch {
+      wall.innerHTML = '<div class="wall-empty">明信片牆暫時無法載入</div>';
     }
   }
 
@@ -518,16 +518,14 @@
       .replace(/\n/g,'<br>');
   }
 
-  // ── 儲存 / 讀取（localStorage，之後換 GAS）──
-  function getCards() {
-    try { return JSON.parse(localStorage.getItem('shiucoda_postcards') || '[]'); }
-    catch { return []; }
-  }
-
-  function saveCard(card) {
-    const cards = getCards();
-    cards.unshift(card);
-    localStorage.setItem('shiucoda_postcards', JSON.stringify(cards));
+  // ── 送出至 GAS ──
+  async function saveCard(card) {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'addPostcard', ...card })
+    });
+    const result = await res.json();
+    if (result.status !== 'ok') throw new Error(result.msg || 'error');
   }
 
   // ── 背景選擇器 ──
@@ -567,7 +565,7 @@
   }
 
   // ── 送出 ──
-  document.getElementById('submit-btn').addEventListener('click', () => {
+  document.getElementById('submit-btn').addEventListener('click', async () => {
     const msg  = document.getElementById('card-msg').value.trim();
     const name = document.getElementById('card-name').value.trim() || '匿名呱民';
 
@@ -576,13 +574,24 @@
       return;
     }
 
-    const stamp = String(Math.floor(Math.random() * STAMP_COUNT) + 1).padStart(2, '0');
+    const stamp = String(Math.floor(Math.random() * 4) + 1).padStart(2, '0');
     const now   = new Date();
     const date  = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
 
-    saveCard({ bg: selectedBg, stamp, msg, name, date });
-    closeModal();
-    renderWall();
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '投遞中…';
+
+    try {
+      await saveCard({ bg: selectedBg, stamp, msg, name, date });
+      closeModal();
+      renderWall();
+    } catch {
+      alert('送出失敗，請稍後再試');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '💌 投出去';
+    }
   });
 
   // ── 初始載入 ──
