@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coda 的畫廊 — 詩雨蔻達</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <style>
+    .artwork-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .artwork-item {
+      border-radius: .75rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .artwork-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(42,157,143,.15);
+    }
+
+    .artwork-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    .artwork-caption {
+      padding: .6rem .9rem;
+      font-size: .82rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      cursor: pointer;
+    }
+
+    #lightbox.hidden { display: none; }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: .5rem;
+      object-fit: contain;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.5rem;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      line-height: 1;
+      opacity: .8;
+    }
+
+    #lightbox-close:hover { opacity: 1; }
+  </style>
+</head>
+<body style="--page-bg: url('/ShiuCoda/images/banners/music-banner.jpg')">
+
+<nav>
+  <a class="nav-logo" href="index.html">💧 ShiuCoda</a>
+  <ul class="nav-links">
+    <li><a href="index.html">關於 Coda</a></li>
+    <li><a href="timeline.html">人生足跡</a></li>
+    <li><a href="music.html">歌曲作品</a></li>
+    <li><a href="videos.html">精選影片</a></li>
+    <li><a href="gallery.html">回憶牆</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="artwork.html" class="active">Coda 的畫廊</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="memorial.html">追思紀念</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>🎨 Coda 的畫廊</h1>
+    <p>詩雨蔻達的插圖作品收藏</p>
+  </div>
+</div>
+
+<main>
+  <div class="artwork-grid" id="artwork-grid">
+    <!-- 新增插圖：複製以下範例，改 src 路徑與說明文字
+    <div class="artwork-item" onclick="openLightbox('images/artwork/圖片名稱.jpg')">
+      <img src="images/artwork/圖片名稱.jpg" alt="圖片說明" draggable="false" oncontextmenu="return false">
+      <div class="artwork-caption">圖片說明</div>
+    </div>
+    -->
+    <div style="grid-column:1/-1;text-align:center;padding:4rem 0;color:var(--text-muted);font-size:.9rem;">
+      🖌️ 插圖即將上線，敬請期待
+    </div>
+  </div>
+</main>
+
+<div id="lightbox" class="hidden" onclick="closeLightbox()">
+  <span id="lightbox-close">✕</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<footer>
+  <div>詩雨蔻達 ShiuCoda · 預見娛樂 一期生</div>
+  <div>2023.02.25 — 2026.12.25</div>
+</footer>
+
+<script>
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.remove('hidden');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.add('hidden');
+    document.getElementById('lightbox-img').src = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+<script src="js/mascot.js"></script>
+</body>
+</html>
