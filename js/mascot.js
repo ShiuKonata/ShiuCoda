@@ -559,16 +559,13 @@
     closeSlipModal();
     var f = currentFortune;
     try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'addFortune',
-          num: f.num, level: f.level, cls: f.cls, text: f.text,
-          name: name, message: '',
-          date: new Date().toLocaleDateString('zh-TW')
-        })
+      var params = new URLSearchParams({
+        action: 'addFortune',
+        num: f.num, level: f.level, cls: f.cls, text: f.text,
+        name: name, message: ''
       });
-      if (typeof window.loadWall === 'function') window.loadWall();
+      await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
+      if (typeof window.loadWall === 'function') setTimeout(window.loadWall, 1500);
     } catch (e) {}
   }
 

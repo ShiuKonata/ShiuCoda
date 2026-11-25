@@ -520,13 +520,14 @@
 
   // ── 送出至 GAS（no-cors 繞過 redirect）──
   async function saveCard(card) {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'addPostcard', ...card })
+    const params = new URLSearchParams({
+      action: 'addPostcard',
+      bg: card.bg,
+      stamp: card.stamp,
+      msg: card.msg,
+      name: card.name
     });
-    // no-cors 無法讀取回應，等 GAS 處理完再 reload
+    await fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' });
     await new Promise(r => setTimeout(r, 1500));
   }
 
