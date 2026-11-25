@@ -479,17 +479,19 @@
   }
 
   function buildCard(c, idx) {
-    const isPortrait = BG_PORTRAIT.has(c.bg);
+    const bg    = String(c.bg).padStart(2, '0');
+    const stamp = String(c.stamp).padStart(2, '0');
+    const isPortrait = BG_PORTRAIT.has(bg);
     const deleteBtn = isAdmin
       ? `<button class="delete-btn" data-idx="${idx}" title="刪除">×</button>`
       : '';
     return `<div class="postcard${isPortrait ? ' portrait' : ''}">
       ${deleteBtn}
-      <img class="postcard-bg" src="${BG_PATH}${c.bg}.jpg" alt="" draggable="false">
+      <img class="postcard-bg" src="${BG_PATH}${bg}.jpg" alt="" draggable="false">
       <div class="postcard-overlay"></div>
       <div class="postcard-content">
         <div class="postcard-stamp">
-          <img src="${STAMP_PATH}${c.stamp}.jpg" alt="" draggable="false">
+          <img src="${STAMP_PATH}${stamp}.jpg" alt="" draggable="false">
         </div>
         <div class="postcard-msg">${escText(c.msg)}</div>
         <div class="postcard-footer">
