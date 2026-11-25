@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMU_Rlt_17DCzQQhdrr1atIwtW_akrDAanUIpGg3-5xdJ-IUU2ZZevua7yEO_erD2R/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5episszh6cvxAs2Cl3pnkhyQqnutjMisDDZ92mZFjOJVfcylD4JAbugtU-5cCzpo6/exec';
 
   const FORTUNES = [
     { num:'一',   level:'大大吉',         cls:'fl-top',     text:'大大吉！！這是最頂的！……等等，你是不是作弊了？這種運氣也太離譜了吧，是不是把阿統的陽壽拿走了!!咳咳咳咳咳🐸' },
