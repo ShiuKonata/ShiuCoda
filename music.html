@@ -8,21 +8,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <style>
+    .music-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .music-layout { grid-template-columns: 1fr; }
+      .player-panel { order: -1; }
+    }
+
+    /* ── 分頁列 ── */
     .tab-bar {
       display: flex;
-      gap: .5rem;
-      margin-bottom: 2rem;
+      gap: .4rem;
+      margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
       padding-bottom: .5rem;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
       background: none;
       border: none;
       font-family: inherit;
-      font-size: .88rem;
+      font-size: .85rem;
       color: var(--text-muted);
-      padding: .4rem .9rem;
+      padding: .35rem .85rem;
       border-radius: 2rem;
       cursor: pointer;
       transition: background .2s, color .2s;
@@ -34,33 +48,49 @@
       color: var(--accent);
     }
 
-    .song-list { display: flex; flex-direction: column; gap: .6rem; }
+    /* ── 歌曲列表 ── */
+    .song-list { display: flex; flex-direction: column; gap: .5rem; }
+
+    .song-section-title {
+      font-size: .78rem;
+      color: var(--text-muted);
+      letter-spacing: .1em;
+      padding: .8rem 0 .4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: .2rem;
+    }
+
+    .song-section-title:first-child { padding-top: 0; }
 
     .song-row {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: .9rem;
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: .6rem;
-      padding: .75rem 1rem;
-      text-decoration: none;
+      padding: .65rem .9rem;
+      cursor: pointer;
       color: var(--text);
-      transition: border-color .2s;
+      transition: border-color .2s, background .2s;
+      text-decoration: none;
+      user-select: none;
     }
 
-    .song-row:hover { border-color: var(--accent-dim); }
+    .song-row:hover  { border-color: var(--accent-dim); background: var(--bg3); }
+    .song-row.active { border-color: var(--accent); background: var(--bg3); }
 
     .song-num {
-      font-size: .75rem;
+      font-size: .72rem;
       color: var(--text-muted);
-      width: 1.5rem;
+      width: 1.4rem;
       text-align: right;
       flex-shrink: 0;
     }
 
     .song-thumb {
-      width: 48px; height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: .3rem;
       object-fit: cover;
       background: var(--bg3);
@@ -70,7 +100,7 @@
     .song-info { flex: 1; min-width: 0; }
 
     .song-title {
-      font-size: .9rem;
+      font-size: .88rem;
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
@@ -78,22 +108,80 @@
     }
 
     .song-meta {
-      font-size: .75rem;
+      font-size: .72rem;
       color: var(--text-muted);
-      margin-top: .2rem;
+      margin-top: .18rem;
     }
 
     .song-badge {
-      font-size: .68rem;
-      padding: .15rem .5rem;
+      font-size: .65rem;
+      padding: .12rem .45rem;
       border-radius: 2rem;
       border: 1px solid var(--border);
-      color: var(--accent);
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    .song-badge.original { background: rgba(42,157,143,.1); }
+    .badge-original { color: #2a9d8f; background: rgba(42,157,143,.1); border-color: rgba(42,157,143,.3); }
+    .badge-cover    { color: #9b59b6; background: rgba(155,89,182,.1); border-color: rgba(155,89,182,.3); }
+    .badge-live     { color: #c8820a; background: rgba(200,130,10,.1);  border-color: rgba(200,130,10,.3); }
+
+    /* ── 播放器面板 ── */
+    .player-panel {
+      position: sticky;
+      top: 72px;
+    }
+
+    .player-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      overflow: hidden;
+    }
+
+    .player-iframe-wrap {
+      position: relative;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .player-iframe-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .player-info {
+      padding: .9rem 1rem;
+    }
+
+    .player-title {
+      font-size: .9rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .player-sub {
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin-top: .3rem;
+    }
+
+    .player-empty {
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      color: var(--text-muted);
+      font-size: .85rem;
+      background: var(--bg3);
+    }
+
+    .player-empty-icon { font-size: 2rem; opacity: .4; }
   </style>
 </head>
 <body style="--page-bg: url('/ShiuCoda/images/banners/music-banner.jpg')">
@@ -105,44 +193,51 @@
     <li><a href="timeline.html">人生足跡</a></li>
     <li><a href="music.html" class="active">歌曲作品</a></li>
     <li><a href="videos.html">精選影片</a></li>
-    <li><a href="gallery.html">回憶牆</a></li><li><a href="postcards.html">明信片牆</a></li><li><a href="fortune.html">詩雨國抽籤</a></li>
+    <li><a href="gallery.html">回憶牆</a></li>
+    <li><a href="postcards.html">明信片牆</a></li>
+    <li><a href="fortune.html">詩雨國抽籤</a></li>
     <li><a href="memorial.html">追思紀念</a></li>
   </ul>
 </nav>
 
 <div class="page-header">
   <div class="page-header-inner">
-    <h1>🎵 詩雨蔻達的創作與美聲鑑賞 🎵</h1>
-    <p>女兒Coda的原創曲與Cover完整收錄</p>
+    <h1>🎵 歌曲作品</h1>
+    <p>詩雨蔻達的原創曲、Cover 與直播翻唱完整收錄</p>
   </div>
 </div>
 
 <main>
-  <div class="tab-bar">
-    <button class="tab-btn active">全部</button>
-    <button class="tab-btn">🎼 原創曲</button>
-    <button class="tab-btn">🎤 Cover</button>
-  </div>
+  <div class="music-layout">
 
-  <!-- 歌曲列表從這裡填入 -->
-  <!-- 範例：
-  <div class="song-list">
-    <a class="song-row" href="https://www.youtube.com/watch?v=影片ID" target="_blank">
-      <span class="song-num">1</span>
-      <img class="song-thumb" src="https://i.ytimg.com/vi/影片ID/mqdefault.jpg" alt="">
-      <div class="song-info">
-        <div class="song-title">曲名</div>
-        <div class="song-meta">2024 · 原創</div>
+    <!-- 左側：歌曲列表 -->
+    <div class="list-panel">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="all">全部</button>
+        <button class="tab-btn" data-tab="original">🎼 原創曲</button>
+        <button class="tab-btn" data-tab="cover">🎤 Cover</button>
+        <button class="tab-btn" data-tab="live">🎙️ 翻唱</button>
       </div>
-      <span class="song-badge original">原創曲</span>
-    </a>
-  </div>
-  -->
 
-  <div class="placeholder-block">
-    <span class="icon">🎵</span>
-    歌曲列表待填入<br>
-    <span style="font-size:.78rem">從 data.js 整理原創曲與 Cover 資料後放入</span>
+      <div class="song-list" id="song-list"></div>
+    </div>
+
+    <!-- 右側：播放器 -->
+    <div class="player-panel">
+      <div class="player-box">
+        <div class="player-iframe-wrap" id="player-wrap">
+          <div class="player-empty">
+            <div class="player-empty-icon">🎵</div>
+            <div>點選左側歌曲開始播放</div>
+          </div>
+        </div>
+        <div class="player-info" id="player-info" style="display:none">
+          <div class="player-title" id="player-title"></div>
+          <div class="player-sub" id="player-sub"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -151,6 +246,106 @@
   <div>2023.02.25 — 2026.12.25</div>
 </footer>
 
+<script>
+const SONGS = [
+  {
+    type: 'original',
+    title: '統美眉，知道甚麼比224還好笑嗎',
+    meta: '3周年紀念曲',
+    vid: 'ENI3YCbU468'
+  },
+  {
+    type: 'cover',
+    title: 'ヨルシカ - 千鳥',
+    meta: 'Cover',
+    vid: 'CBCI8ASlusg'
+  },
+  {
+    type: 'live',
+    title: '陳綺貞 - 旅行的意義',
+    meta: '直播翻唱',
+    vid: '7Cfv6Av6bRA'
+  },
+];
+
+const BADGE = {
+  original: { cls: 'badge-original', label: '原創曲' },
+  cover:    { cls: 'badge-cover',    label: 'Cover'  },
+  live:     { cls: 'badge-live',     label: '翻唱'   },
+};
+
+const SECTION = {
+  original: '🎼 原創曲',
+  cover:    '🎤 Cover',
+  live:     '🎙️ 翻唱',
+};
+
+let currentTab = 'all';
+
+function render() {
+  const list = document.getElementById('song-list');
+  const filtered = currentTab === 'all'
+    ? SONGS
+    : SONGS.filter(s => s.type === currentTab);
+
+  if (!filtered.length) {
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（暫無資料）</div>';
+    return;
+  }
+
+  let html = '';
+  let lastType = null;
+  let idx = 0;
+
+  filtered.forEach(s => {
+    if (currentTab === 'all' && s.type !== lastType) {
+      html += '<div class="song-section-title">' + SECTION[s.type] + '</div>';
+      lastType = s.type;
+      idx = 0;
+    }
+    idx++;
+    const b = BADGE[s.type];
+    html += `<div class="song-row" data-vid="${s.vid}" data-title="${s.title}" data-sub="${s.meta}">
+      <span class="song-num">${idx}</span>
+      <img class="song-thumb" src="https://i.ytimg.com/vi/${s.vid}/mqdefault.jpg" alt="" loading="lazy">
+      <div class="song-info">
+        <div class="song-title">${s.title}</div>
+        <div class="song-meta">${s.meta}</div>
+      </div>
+      <span class="song-badge ${b.cls}">${b.label}</span>
+    </div>`;
+  });
+
+  list.innerHTML = html;
+
+  list.querySelectorAll('.song-row').forEach(row => {
+    row.addEventListener('click', () => {
+      list.querySelectorAll('.song-row').forEach(r => r.classList.remove('active'));
+      row.classList.add('active');
+      playVideo(row.dataset.vid, row.dataset.title, row.dataset.sub);
+    });
+  });
+}
+
+function playVideo(vid, title, sub) {
+  document.getElementById('player-wrap').innerHTML =
+    `<iframe src="https://www.youtube.com/embed/${vid}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  document.getElementById('player-title').textContent = title;
+  document.getElementById('player-sub').textContent = sub;
+  document.getElementById('player-info').style.display = '';
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    render();
+  });
+});
+
+render();
+</script>
 <script src="js/mascot.js"></script>
 </body>
 </html>
