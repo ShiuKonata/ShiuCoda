@@ -48,7 +48,7 @@
     .postcard-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(220, 240, 235, .62);
+      background: rgba(210, 236, 228, .78);
     }
 
     .postcard-content {
@@ -62,23 +62,32 @@
     /* ── 郵票 ── */
     .postcard-stamp {
       position: absolute;
-      top: .75rem;
-      right: .75rem;
-      width: 50px;
-      height: 64px;
-      border: 2px solid rgba(42,157,143,.5);
-      border-radius: 2px;
-      overflow: hidden;
-      background: var(--bg3);
-      box-shadow: 0 1px 4px rgba(0,0,0,.1);
-    }
+      top: .8rem;
+      right: .8rem;
+      width: 56px;
+      height: 72px;
+      background: white;
+      padding: 3px;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,.2));
 
-    .postcard-stamp::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border: 4px dotted rgba(42,157,143,.35);
-      pointer-events: none;
+      /* 鋸齒打孔效果 */
+      mask-image:
+        radial-gradient(circle at 50% 0,   black 4px, transparent 4px) top    / 10px 4px repeat-x,
+        radial-gradient(circle at 50% 100%, black 4px, transparent 4px) bottom / 10px 4px repeat-x,
+        radial-gradient(circle at 0   50%, black 4px, transparent 4px) left   / 4px 10px repeat-y,
+        radial-gradient(circle at 100% 50%, black 4px, transparent 4px) right  / 4px 10px repeat-y,
+        linear-gradient(black, black);
+      mask-composite: subtract, subtract, subtract, subtract, add;
+      mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y, no-repeat;
+
+      -webkit-mask-image:
+        radial-gradient(circle at 50% 0,   black 4px, transparent 4px) top    / 10px 4px repeat-x,
+        radial-gradient(circle at 50% 100%, black 4px, transparent 4px) bottom / 10px 4px repeat-x,
+        radial-gradient(circle at 0   50%, black 4px, transparent 4px) left   / 4px 10px repeat-y,
+        radial-gradient(circle at 100% 50%, black 4px, transparent 4px) right  / 4px 10px repeat-y,
+        linear-gradient(black, black);
+      -webkit-mask-composite: destination-out, destination-out, destination-out, destination-out, source-over;
+      -webkit-mask-repeat: repeat-x, repeat-x, repeat-y, repeat-y, no-repeat;
     }
 
     .postcard-stamp img {
@@ -91,12 +100,33 @@
       display: block;
     }
 
+    /* ── 刪除鈕（admin 模式）── */
+    .delete-btn {
+      position: absolute;
+      top: .4rem;
+      left: .4rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(192,57,43,.85);
+      color: #fff;
+      border: none;
+      font-size: .8rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
     /* ── 留言區 ── */
     .postcard-msg {
       font-size: .85rem;
-      line-height: 1.7;
-      color: var(--text);
-      padding-right: 60px;
+      font-weight: 400;
+      line-height: 1.75;
+      color: #0d2018;
+      padding-right: 64px;
       flex: 1;
       word-break: break-word;
       font-family: 'Noto Serif TC', serif;
@@ -120,14 +150,14 @@
 
     .postcard-from {
       font-size: .72rem;
-      color: var(--text-muted);
+      color: #3a6a5a;
       font-style: italic;
     }
 
     .postcard-from-name {
       font-size: .78rem;
       font-weight: 500;
-      color: var(--text);
+      color: #0d2018;
       margin-top: .15rem;
     }
 
@@ -137,20 +167,20 @@
 
     .postcard-to-label {
       font-size: .68rem;
-      color: var(--text-muted);
+      color: #3a6a5a;
       letter-spacing: .05em;
     }
 
     .postcard-to-name {
       font-size: .82rem;
       font-weight: 700;
-      color: var(--accent);
+      color: #1a7a6e;
       letter-spacing: .05em;
     }
 
     .postcard-date {
       font-size: .65rem;
-      color: var(--text-muted);
+      color: #3a6a5a;
       margin-top: .15rem;
     }
 
@@ -412,6 +442,8 @@
   // 禁止右鍵
   document.addEventListener('contextmenu', e => e.preventDefault());
 
+  const isAdmin = new URLSearchParams(location.search).has('admin');
+
   const BG_PATH    = 'images/postcards/postcards/';
   const STAMP_PATH = 'images/postcards/Postage/';
   const STAMP_COUNT = 4;
@@ -430,12 +462,29 @@
       wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
       return;
     }
-    wall.innerHTML = cards.map(c => buildCard(c)).join('');
+    wall.innerHTML = cards.map((c, i) => buildCard(c, i)).join('');
+
+    if (isAdmin) {
+      wall.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const idx = parseInt(btn.dataset.idx);
+          const cards = getCards();
+          cards.splice(idx, 1);
+          localStorage.setItem('shiucoda_postcards', JSON.stringify(cards));
+          renderWall();
+        });
+      });
+    }
   }
 
-  function buildCard(c) {
+  function buildCard(c, idx) {
     const isPortrait = BG_PORTRAIT.has(c.bg);
+    const deleteBtn = isAdmin
+      ? `<button class="delete-btn" data-idx="${idx}" title="刪除">×</button>`
+      : '';
     return `<div class="postcard${isPortrait ? ' portrait' : ''}">
+      ${deleteBtn}
       <img class="postcard-bg" src="${BG_PATH}${c.bg}.jpg" alt="" draggable="false">
       <div class="postcard-overlay"></div>
       <div class="postcard-content">
