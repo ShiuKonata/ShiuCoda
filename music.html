@@ -8,23 +8,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    .music-layout {
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 1.5rem;
-      align-items: start;
+    /* ── 搜尋 + 分頁列（雙欄外） ── */
+    .music-controls {
+      margin-bottom: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
     }
 
-    @media (max-width: 860px) {
-      .music-layout { grid-template-columns: 1fr; }
-      .player-panel { order: -1; }
+    .music-search {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: .5rem .9rem;
+      font-family: inherit;
+      font-size: .88rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
     }
 
-    /* ── 分頁列 ── */
+    .music-search::placeholder { color: var(--text-muted); }
+    .music-search:focus { border-color: var(--accent-dim); }
+
     .tab-bar {
       display: flex;
       gap: .4rem;
-      margin-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
       padding-bottom: .5rem;
       flex-wrap: wrap;
@@ -46,6 +56,18 @@
     .tab-btn:hover {
       background: var(--bg3);
       color: var(--accent);
+    }
+
+    .music-layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .music-layout { grid-template-columns: 1fr; }
+      .player-panel { order: -1; }
     }
 
     /* ── 歌曲列表 ── */
@@ -208,17 +230,20 @@
 </div>
 
 <main>
+  <!-- 搜尋 + 分頁列 -->
+  <div class="music-controls">
+    <input class="music-search" id="music-search" type="search" placeholder="🔍 搜尋歌名…">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="original">🎼 原創曲</button>
+      <button class="tab-btn" data-tab="cover">🎤 Cover</button>
+      <button class="tab-btn" data-tab="live">🎙️ 翻唱</button>
+    </div>
+  </div>
+
   <div class="music-layout">
 
     <!-- 左側：歌曲列表 -->
     <div class="list-panel">
-      <div class="tab-bar">
-        <button class="tab-btn active" data-tab="all">全部</button>
-        <button class="tab-btn" data-tab="original">🎼 原創曲</button>
-        <button class="tab-btn" data-tab="cover">🎤 Cover</button>
-        <button class="tab-btn" data-tab="live">🎙️ 翻唱</button>
-      </div>
-
       <div class="song-list" id="song-list"></div>
     </div>
 
@@ -280,16 +305,23 @@ const SECTION = {
   live:     '🎙️ 翻唱',
 };
 
-let currentTab = 'all';
+let currentTab = 'original';
+let searchQuery = '';
 
 function render() {
   const list = document.getElementById('song-list');
-  const filtered = currentTab === 'all'
-    ? SONGS
-    : SONGS.filter(s => s.type === currentTab);
+  const q = searchQuery.trim().toLowerCase();
+  const isSearch = q.length > 0;
+
+  let filtered;
+  if (isSearch) {
+    filtered = SONGS.filter(s => s.title.toLowerCase().includes(q));
+  } else {
+    filtered = SONGS.filter(s => s.type === currentTab);
+  }
 
   if (!filtered.length) {
-    list.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（暫無資料）</div>';
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（找不到相符的歌曲）</div>';
     return;
   }
 
@@ -298,12 +330,13 @@ function render() {
   let idx = 0;
 
   filtered.forEach(s => {
-    if (currentTab === 'all' && s.type !== lastType) {
+    if (isSearch && s.type !== lastType) {
       html += '<div class="song-section-title">' + SECTION[s.type] + '</div>';
       lastType = s.type;
       idx = 0;
     }
-    idx++;
+    if (!isSearch) idx++;
+    else idx++;
     const b = BADGE[s.type];
     html += `<div class="song-row" data-vid="${s.vid}" data-title="${s.title}" data-sub="${s.meta}">
       <span class="song-num">${idx}</span>
@@ -340,8 +373,15 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentTab = btn.dataset.tab;
+    document.getElementById('music-search').value = '';
+    searchQuery = '';
     render();
   });
+});
+
+document.getElementById('music-search').addEventListener('input', function() {
+  searchQuery = this.value;
+  render();
 });
 
 render();
