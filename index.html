@@ -325,6 +325,33 @@
       letter-spacing: .03em;
     }
 
+    /* ── 詩雨國國定假日 ── */
+    .holiday-list {
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+    }
+
+    .holiday-row {
+      display: flex;
+      align-items: baseline;
+      gap: .9rem;
+      font-size: .9rem;
+    }
+
+    .holiday-date {
+      font-family: monospace;
+      font-size: .82rem;
+      color: var(--accent);
+      letter-spacing: .05em;
+      min-width: 2.8rem;
+      flex-shrink: 0;
+    }
+
+    .holiday-name {
+      color: var(--text);
+    }
+
     /* ── 小知識 ── */
     .trivia-grid {
       display: grid;
@@ -557,6 +584,10 @@
       <div class="label">期別</div>
       <div class="value">一期生</div>
     </div>
+    <div class="info-card">
+      <div class="label">麻麻</div>
+      <div class="value">茶碗熊</div>
+    </div>
   </div>
 </section>
 
@@ -569,6 +600,19 @@
     <span class="catchphrase">「瘋掉」</span>
     <span class="catchphrase">「對簿幾」</span>
     <span class="catchphrase">「窩給ㄋ跪」</span>
+  </div>
+</section>
+
+<!-- ── 詩雨國國定假日 ── -->
+<section>
+  <h2 class="section-title">📅 詩雨國國定假日</h2>
+  <div class="holiday-list">
+    <div class="holiday-row"><span class="holiday-date">02.25</span><span class="holiday-name">CODA 就職紀念日</span></div>
+    <div class="holiday-row"><span class="holiday-date">05.08</span><span class="holiday-name">青椒茄子處刑日</span></div>
+    <div class="holiday-row"><span class="holiday-date">06.06</span><span class="holiday-name">CODA 誕辰紀念日</span></div>
+    <div class="holiday-row"><span class="holiday-date">08.10</span><span class="holiday-name">今天只能下雨日</span></div>
+    <div class="holiday-row"><span class="holiday-date">10.28</span><span class="holiday-name">CAPO 誕辰紀念日</span></div>
+    <div class="holiday-row"><span class="holiday-date">12.30</span><span class="holiday-name">吉他換弦日</span></div>
   </div>
 </section>
 
