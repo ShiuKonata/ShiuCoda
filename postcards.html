@@ -452,6 +452,36 @@
   const BG_PORTRAIT = new Set(['02','04']);
 
   let selectedBg = '01';
+  let allCards   = [];
+
+  // ── 頁面鎖定 ──
+  const BC = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('coda_postcard') : null;
+
+  function lockBtn(msg) {
+    const btn = document.getElementById('open-modal-btn');
+    btn.disabled = true;
+    btn.textContent = msg;
+    btn.style.opacity = '.6';
+    btn.style.cursor = 'not-allowed';
+  }
+
+  function getTodayStr() {
+    const n = new Date();
+    return n.getFullYear() + '.' + String(n.getMonth()+1).padStart(2,'0') + '.' + String(n.getDate()).padStart(2,'0');
+  }
+
+  // 開啟時檢查 sessionStorage
+  if (sessionStorage.getItem('codaPostcardSent')) {
+    lockBtn('💌 已寄出！關掉頁面後才能再寄');
+  }
+
+  // 其他分頁通知
+  if (BC) {
+    BC.onmessage = (e) => {
+      if (e.data === 'locked')     { sessionStorage.setItem('codaPostcardSent','1'); lockBtn('💌 已寄出！關掉頁面後才能再寄'); }
+      if (e.data === 'daily_full') { lockBtn('📮 今日明信片已滿 50 張，明天再來唷'); }
+    };
+  }
 
   // ── 瀑布流渲染 ──
   async function renderWall() {
@@ -460,6 +490,7 @@
     try {
       const res  = await fetch(SCRIPT_URL + '?action=getPostcards');
       const cards = await res.json();
+      allCards = Array.isArray(cards) ? cards : [];
       if (!Array.isArray(cards) || !cards.length) {
         wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
         return;
@@ -550,6 +581,14 @@
 
   // ── Modal 開關 ──
   document.getElementById('open-modal-btn').addEventListener('click', () => {
+    // 每日上限檢查
+    const today = getTodayStr();
+    const todayCount = allCards.filter(c => String(c.date) === today).length;
+    if (todayCount >= 50) {
+      lockBtn('📮 今日明信片已滿 50 張，明天再來唷');
+      if (BC) BC.postMessage('daily_full');
+      return;
+    }
     document.getElementById('modal').classList.add('open');
   });
 
@@ -592,9 +631,12 @@
       await saveCard({ bg: selectedBg, stamp, msg, name, date });
       closeModal();
       await renderWall();
+      // 鎖定此分頁，並通知其他分頁
+      sessionStorage.setItem('codaPostcardSent', '1');
+      if (BC) BC.postMessage('locked');
+      lockBtn('💌 已寄出！關掉頁面後才能再寄');
     } catch {
       alert('送出失敗，請稍後再試');
-    } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = '💌 投出去';
     }
