@@ -303,7 +303,12 @@
       if (show) visible++;
     });
     if (countEl) countEl.textContent = visible > 0 ? '共 ' + visible + ' 張' : '';
-    if (emptyEl) emptyEl.style.display = visible === 0 ? '' : 'none';
+    if (emptyEl) {
+      emptyEl.style.display = visible === 0 ? '' : 'none';
+      emptyEl.innerHTML = cat === 'all'
+        ? '<span class="icon">🖼️</span>還沒有照片喔<br><span style="font-size:.78rem">把圖片放入 images/gallery/ 後新增到 gallery.html</span>'
+        : '🖌️ 即將上線，敬請期待';
+    }
   }
 
   tabs.forEach(function (tab) {
