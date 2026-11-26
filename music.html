@@ -62,7 +62,7 @@
       display: grid;
       grid-template-columns: 1fr 400px;
       gap: 1.5rem;
-      align-items: start;
+      align-items: stretch;
     }
 
     @media (max-width: 860px) {
@@ -152,6 +152,7 @@
     .player-panel {
       position: sticky;
       top: 72px;
+      align-self: stretch;
     }
 
     .player-box {
@@ -159,11 +160,15 @@
       border: 1px solid var(--border);
       border-radius: .75rem;
       overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .player-iframe-wrap {
+      flex: 1;
       position: relative;
-      padding-top: 56.25%;
+      min-height: 200px;
       background: #000;
     }
 
