@@ -101,6 +101,7 @@
 
     .song-row:hover  { border-color: var(--accent-dim); background: var(--bg3); }
     .song-row.active { border-color: var(--accent); background: var(--bg3); }
+    .song-row-empty  { opacity: 0; pointer-events: none; cursor: default; }
 
     .song-num {
       font-size: .72rem;
@@ -448,7 +449,11 @@ function render() {
   }
 
   if (!filtered.length) {
-    list.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（找不到相符的歌曲）</div>';
+    let html = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（找不到相符的歌曲）</div>';
+    for (let i = 0; i < PAGE_SIZE - 1; i++) {
+      html += `<div class="song-row song-row-empty" aria-hidden="true"></div>`;
+    }
+    list.innerHTML = html;
     renderPagination(0);
     return;
   }
@@ -479,6 +484,11 @@ function render() {
       <span class="song-badge ${b.cls}">${b.label}</span>
     </div>`;
   });
+
+  const emptyCount = PAGE_SIZE - pageItems.length;
+  for (let i = 0; i < emptyCount; i++) {
+    html += `<div class="song-row song-row-empty" aria-hidden="true"></div>`;
+  }
 
   list.innerHTML = html;
 
