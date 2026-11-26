@@ -8,9 +8,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <style>
+    .tab-bar {
+      display: flex;
+      gap: .4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: .85rem;
+      color: var(--text-muted);
+      padding: .35rem .85rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      background: var(--bg3);
+      color: var(--accent);
+    }
+
     .artwork-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 1rem;
     }
 
@@ -41,6 +69,14 @@
       padding: .6rem .9rem;
       font-size: .82rem;
       color: var(--text-muted);
+    }
+
+    .artwork-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 0;
+      color: var(--text-muted);
+      font-size: .9rem;
     }
 
     /* ── Lightbox ── */
@@ -106,56 +142,8 @@
 </div>
 
 <main>
-  <div class="artwork-grid" id="artwork-grid">
-    <div class="artwork-item" onclick="openLightbox('images/artwork/CODA美女雙馬尾.jpg')">
-      <img src="images/artwork/CODA美女雙馬尾.jpg" alt="CODA美女雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">CODA美女雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/CODA高中生.JPG')">
-      <img src="images/artwork/CODA高中生.JPG" alt="CODA高中生" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">CODA高中生</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/C紀人.JPG')">
-      <img src="images/artwork/C紀人.JPG" alt="C紀人" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">C紀人</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/G紀人.JPG')">
-      <img src="images/artwork/G紀人.JPG" alt="G紀人" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">G紀人</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/埃穆亞.JPG')">
-      <img src="images/artwork/埃穆亞.JPG" alt="埃穆亞" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">埃穆亞</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/壯壯女僕.JPG')">
-      <img src="images/artwork/壯壯女僕.JPG" alt="壯壯女僕" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">壯壯女僕</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/姬城三千華雙馬尾.jpg')">
-      <img src="images/artwork/姬城三千華雙馬尾.jpg" alt="姬城三千華雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">姬城三千華雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/帕蘿妮雙馬尾.jpg')">
-      <img src="images/artwork/帕蘿妮雙馬尾.jpg" alt="帕蘿妮雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">帕蘿妮雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/神無月鹿比雙馬尾.jpg')">
-      <img src="images/artwork/神無月鹿比雙馬尾.jpg" alt="神無月鹿比雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">神無月鹿比雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/艾琳妮雅雙馬尾.jpg')">
-      <img src="images/artwork/艾琳妮雅雙馬尾.jpg" alt="艾琳妮雅雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">艾琳妮雅雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/莉卡洛斯雙馬尾.jpg')">
-      <img src="images/artwork/莉卡洛斯雙馬尾.jpg" alt="莉卡洛斯雙馬尾" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">莉卡洛斯雙馬尾</div>
-    </div>
-    <div class="artwork-item" onclick="openLightbox('images/artwork/豆魚美編.JPG')">
-      <img src="images/artwork/豆魚美編.JPG" alt="豆魚美編" draggable="false" oncontextmenu="return false">
-      <div class="artwork-caption">豆魚美編</div>
-    </div>
-  </div>
+  <div class="tab-bar" id="tab-bar"></div>
+  <div class="artwork-grid" id="artwork-grid"></div>
 </main>
 
 <div id="lightbox" class="hidden" onclick="closeLightbox()">
@@ -171,6 +159,96 @@
 <script>
   document.addEventListener('contextmenu', e => e.preventDefault());
 
+  // ── 分類資料 ──
+  // folder: images/artwork/ 底下的子資料夾名稱
+  // label:  Tab 顯示文字
+  // images: [{ file: '檔名.jpg', caption: '說明' }, ...]
+  const CATEGORIES = [
+    {
+      folder: '第二彈呱民委託',
+      label: '第二彈呱民委託',
+      images: []
+    },
+    {
+      folder: '第一彈呱民委託',
+      label: '第一彈呱民委託',
+      images: []
+    },
+    {
+      folder: '統領麻麻形象',
+      label: '統領麻麻形象',
+      images: []
+    },
+    {
+      folder: '獸化Coda',
+      label: '獸化Coda',
+      images: []
+    },
+    {
+      folder: '課本繪圖',
+      label: '課本繪圖',
+      images: []
+    },
+    {
+      folder: '賣畫補貼家用',
+      label: '賣畫補貼家用',
+      images: []
+    },
+    {
+      folder: '高中生女僕',
+      label: '高中生&女僕',
+      images: []
+    },
+    {
+      folder: '同期生',
+      label: '同期生',
+      images: []
+    },
+    {
+      folder: '統領的偶像',
+      label: '統領的偶像',
+      images: []
+    },
+    {
+      folder: '經紀人美編',
+      label: '經紀人&美編',
+      images: []
+    },
+  ];
+
+  let currentTab = 0;
+
+  function buildTabs() {
+    const bar = document.getElementById('tab-bar');
+    bar.innerHTML = CATEGORIES.map((c, i) =>
+      `<button class="tab-btn${i === 0 ? ' active' : ''}" data-idx="${i}">${c.label}</button>`
+    ).join('');
+    bar.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = parseInt(btn.dataset.idx);
+        renderGrid();
+      });
+    });
+  }
+
+  function renderGrid() {
+    const cat = CATEGORIES[currentTab];
+    const grid = document.getElementById('artwork-grid');
+    if (!cat.images.length) {
+      grid.innerHTML = '<div class="artwork-empty">🖌️ 即將上線，敬請期待</div>';
+      return;
+    }
+    grid.innerHTML = cat.images.map(img => {
+      const src = `images/artwork/${cat.folder}/${img.file}`;
+      return `<div class="artwork-item" onclick="openLightbox('${src}')">
+        <img src="${src}" alt="${img.caption}" draggable="false" oncontextmenu="return false">
+        <div class="artwork-caption">${img.caption}</div>
+      </div>`;
+    }).join('');
+  }
+
   function openLightbox(src) {
     document.getElementById('lightbox-img').src = src;
     document.getElementById('lightbox').classList.remove('hidden');
@@ -184,6 +262,9 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeLightbox();
   });
+
+  buildTabs();
+  renderGrid();
 </script>
 <script src="js/mascot.js"></script>
 </body>
