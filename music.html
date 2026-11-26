@@ -210,6 +210,34 @@
     }
 
     .player-empty-icon { font-size: 2rem; opacity: .4; }
+
+    /* ── 分頁 ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      font-family: inherit;
+      font-size: .78rem;
+      color: var(--text-muted);
+      padding: .28rem .62rem;
+      cursor: pointer;
+      min-width: 2rem;
+      text-align: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .page-btn:hover { background: var(--bg3); border-color: var(--accent-dim); color: var(--text); }
+    .page-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .page-btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
   </style>
 </head>
 <body style="--page-bg: url('/ShiuCoda/images/banners/music-banner.jpg')">
@@ -404,6 +432,8 @@ const SECTION = {
 
 let currentTab = 'original';
 let searchQuery = '';
+let currentPage = 1;
+const PAGE_SIZE = 10;
 
 function render() {
   const list = document.getElementById('song-list');
@@ -419,24 +449,28 @@ function render() {
 
   if (!filtered.length) {
     list.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;padding:2rem 0;text-align:center">（找不到相符的歌曲）</div>';
+    renderPagination(0);
     return;
   }
 
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const pageOffset = (currentPage - 1) * PAGE_SIZE;
+
   let html = '';
   let lastType = null;
-  let idx = 0;
 
-  filtered.forEach(s => {
+  pageItems.forEach((s, i) => {
+    const globalIdx = pageOffset + i + 1;
     if (isSearch && s.type !== lastType) {
       html += '<div class="song-section-title">' + SECTION[s.type] + '</div>';
       lastType = s.type;
-      idx = 0;
     }
-    if (!isSearch) idx++;
-    else idx++;
     const b = BADGE[s.type];
     html += `<div class="song-row" data-vid="${s.vid}" data-title="${s.title}" data-sub="${s.meta}">
-      <span class="song-num">${idx}</span>
+      <span class="song-num">${globalIdx}</span>
       <img class="song-thumb" src="https://i.ytimg.com/vi/${s.vid}/mqdefault.jpg" alt="" loading="lazy">
       <div class="song-info">
         <div class="song-title">${s.title}</div>
@@ -453,6 +487,40 @@ function render() {
       list.querySelectorAll('.song-row').forEach(r => r.classList.remove('active'));
       row.classList.add('active');
       playVideo(row.dataset.vid, row.dataset.title, row.dataset.sub);
+    });
+  });
+
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+  let pg = document.getElementById('pagination');
+  if (!pg) {
+    pg = document.createElement('div');
+    pg.id = 'pagination';
+    pg.className = 'pagination';
+    document.getElementById('song-list').after(pg);
+  }
+
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+
+  let html = '';
+
+  html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">‹</button>`;
+
+  for (let p = 1; p <= totalPages; p++) {
+    html += `<button class="page-btn${p === currentPage ? ' active' : ''}" data-page="${p}">${p}</button>`;
+  }
+
+  html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">›</button>`;
+
+  pg.innerHTML = html;
+
+  pg.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentPage = parseInt(btn.dataset.page);
+      render();
+      document.getElementById('song-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 }
@@ -472,12 +540,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     currentTab = btn.dataset.tab;
     document.getElementById('music-search').value = '';
     searchQuery = '';
+    currentPage = 1;
     render();
   });
 });
 
 document.getElementById('music-search').addEventListener('input', function() {
   searchQuery = this.value;
+  currentPage = 1;
   render();
 });
 
