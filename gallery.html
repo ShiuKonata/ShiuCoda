@@ -208,8 +208,7 @@
 
 <main>
   <div class="gallery-tabs">
-    <button class="gallery-tab active" data-cat="all">全部</button>
-    <button class="gallery-tab" data-cat="live">直播截圖</button>
+    <button class="gallery-tab active" data-cat="live">直播截圖</button>
     <button class="gallery-tab" data-cat="event">活動 / 線下</button>
     <span class="gallery-count"></span>
   </div>
@@ -298,16 +297,14 @@
   function filter(cat) {
     var visible = 0;
     items.forEach(function (item) {
-      var show = cat === 'all' || item.dataset.cat === cat;
+      var show = item.dataset.cat === cat;
       item.classList.toggle('hidden', !show);
       if (show) visible++;
     });
     if (countEl) countEl.textContent = visible > 0 ? '共 ' + visible + ' 張' : '';
     if (emptyEl) {
       emptyEl.style.display = visible === 0 ? '' : 'none';
-      emptyEl.innerHTML = cat === 'all'
-        ? '<span class="icon">🖼️</span>還沒有照片喔<br><span style="font-size:.78rem">把圖片放入 images/gallery/ 後新增到 gallery.html</span>'
-        : '🖌️ 即將上線，敬請期待';
+      emptyEl.innerHTML = '🖌️ 即將上線，敬請期待';
     }
   }
 
@@ -319,7 +316,7 @@
     });
   });
 
-  filter('all');
+  filter('live');
 
   /* ── Lightbox ── */
   var lb      = document.getElementById('lightbox');
