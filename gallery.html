@@ -421,6 +421,7 @@
 <script src="js/mascot.js"></script>
 <script src="js/music.js"></script>
 <script>
+document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
 (function () {
   var tabs    = document.querySelectorAll('.gallery-tab');
   var items   = document.querySelectorAll('.masonry-item');
