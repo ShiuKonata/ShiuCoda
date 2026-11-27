@@ -373,6 +373,32 @@
 
     .btn-submit:hover { background: var(--accent-dim); }
     .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+    .pc-pagination {
+      display: flex;
+      justify-content: center;
+      gap: .35rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .pcp-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      font-family: inherit;
+      font-size: .78rem;
+      color: var(--text-muted);
+      padding: .28rem .62rem;
+      cursor: pointer;
+      min-width: 2rem;
+      text-align: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .pcp-btn:hover { background: var(--bg3); border-color: var(--accent-dim); color: var(--text); }
+    .pcp-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .pcp-btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
   </style>
 </head>
 <body style="--page-bg: url('/ShiuCoda/images/banners/postcards-banner.jpg')" data-audio="/ShiuCoda/audio/postcards.mp3">
@@ -461,6 +487,8 @@
 
   let selectedBg = '01';
   let allCards   = [];
+  let pcPage     = 1;
+  const PC_PAGE_SIZE = 9;
 
   // ── 頁面鎖定 ──
   const BC = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('coda_postcard') : null;
@@ -499,23 +527,58 @@
       const res  = await fetch(SCRIPT_URL + '?action=getPostcards');
       const cards = await res.json();
       allCards = Array.isArray(cards) ? cards : [];
-      if (!Array.isArray(cards) || !cards.length) {
+      if (!allCards.length) {
         wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
+        renderPcPagination(0);
         return;
       }
-      wall.innerHTML = cards.map((c, i) => buildCard(c, i)).join('');
-      if (isAdmin) {
-        wall.querySelectorAll('.delete-btn').forEach(btn => {
-          btn.addEventListener('click', e => {
-            e.stopPropagation();
-            if (!confirm('確定刪除這張明信片？\n（需手動至 Google Sheet 刪除對應列）')) return;
-            btn.closest('.postcard').remove();
-          });
-        });
-      }
+      pcPage = 1;
+      renderPcPage();
     } catch {
       wall.innerHTML = '<div class="wall-empty">明信片牆暫時無法載入</div>';
     }
+  }
+
+  function renderPcPage() {
+    const wall = document.getElementById('postcards-wall');
+    const totalPages = Math.ceil(allCards.length / PC_PAGE_SIZE);
+    if (pcPage > totalPages) pcPage = totalPages;
+    const pageCards = allCards.slice((pcPage - 1) * PC_PAGE_SIZE, pcPage * PC_PAGE_SIZE);
+    wall.innerHTML = pageCards.map((c, i) => buildCard(c, (pcPage - 1) * PC_PAGE_SIZE + i)).join('');
+    if (isAdmin) {
+      wall.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (!confirm('確定刪除這張明信片？\n（需手動至 Google Sheet 刪除對應列）')) return;
+          btn.closest('.postcard').remove();
+        });
+      });
+    }
+    renderPcPagination(totalPages);
+  }
+
+  function renderPcPagination(totalPages) {
+    let pg = document.getElementById('pc-pagination');
+    if (!pg) {
+      pg = document.createElement('div');
+      pg.id = 'pc-pagination';
+      pg.className = 'pc-pagination';
+      document.getElementById('postcards-wall').after(pg);
+    }
+    if (totalPages <= 1) { pg.innerHTML = ''; return; }
+    let html = `<button class="pcp-btn" ${pcPage === 1 ? 'disabled' : ''} data-p="${pcPage - 1}">‹</button>`;
+    for (let p = 1; p <= totalPages; p++) {
+      html += `<button class="pcp-btn${p === pcPage ? ' active' : ''}" data-p="${p}">${p}</button>`;
+    }
+    html += `<button class="pcp-btn" ${pcPage === totalPages ? 'disabled' : ''} data-p="${pcPage + 1}">›</button>`;
+    pg.innerHTML = html;
+    pg.querySelectorAll('.pcp-btn[data-p]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pcPage = parseInt(btn.dataset.p);
+        renderPcPage();
+        document.getElementById('postcards-wall').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   }
 
   function buildCard(c, idx) {

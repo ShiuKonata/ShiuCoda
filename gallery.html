@@ -191,6 +191,32 @@
       .lightbox-prev { left: .4rem; }
       .lightbox-next { right: .4rem; }
     }
+
+    .gallery-pagination {
+      display: flex;
+      justify-content: center;
+      gap: .35rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .gp-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      font-family: inherit;
+      font-size: .78rem;
+      color: var(--text-muted);
+      padding: .28rem .62rem;
+      cursor: pointer;
+      min-width: 2rem;
+      text-align: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .gp-btn:hover { background: var(--bg3); border-color: var(--accent-dim); color: var(--text); }
+    .gp-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .gp-btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
   </style>
 </head>
 <body style="--page-bg: url('/ShiuCoda/images/banners/gallery-banner.jpg')" data-audio="/ShiuCoda/audio/gallery.mp3">
@@ -400,20 +426,64 @@
   var items   = document.querySelectorAll('.masonry-item');
   var countEl = document.querySelector('.gallery-count');
   var emptyEl = document.getElementById('emptyMsg');
+  var currentCat = 'live';
+  var currentPage = 1;
+  var PAGE_SIZE = 10;
 
-  /* ── 分類過濾 ── */
+  /* ── 分類過濾 + 分頁 ── */
   function filter(cat) {
-    var visible = 0;
-    items.forEach(function (item) {
-      var show = item.dataset.cat === cat;
-      item.classList.toggle('hidden', !show);
-      if (show) visible++;
+    currentCat = cat;
+    currentPage = 1;
+    renderPage();
+  }
+
+  function renderPage() {
+    var matched = Array.from(items).filter(function(item) {
+      return item.dataset.cat === currentCat;
     });
-    if (countEl) countEl.textContent = visible > 0 ? '共 ' + visible + ' 張' : '';
+    var total = matched.length;
+    var totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    var start = (currentPage - 1) * PAGE_SIZE;
+    var end   = start + PAGE_SIZE;
+
+    items.forEach(function(item) { item.classList.add('hidden'); });
+    matched.slice(start, end).forEach(function(item) { item.classList.remove('hidden'); });
+
+    if (countEl) countEl.textContent = total > 0 ? '共 ' + total + ' 張' : '';
     if (emptyEl) {
-      emptyEl.style.display = visible === 0 ? '' : 'none';
+      emptyEl.style.display = total === 0 ? '' : 'none';
       emptyEl.innerHTML = '🖌️ 即將上線，敬請期待';
     }
+
+    renderGalleryPagination(totalPages, total);
+  }
+
+  function renderGalleryPagination(totalPages, total) {
+    var pg = document.getElementById('gallery-pagination');
+    if (!pg) {
+      pg = document.createElement('div');
+      pg.id = 'gallery-pagination';
+      pg.className = 'gallery-pagination';
+      document.querySelector('.masonry').after(pg);
+    }
+    if (totalPages <= 1 || total === 0) { pg.innerHTML = ''; return; }
+
+    var html = '<button class="gp-btn" ' + (currentPage === 1 ? 'disabled' : '') + ' data-p="' + (currentPage - 1) + '">‹</button>';
+    for (var p = 1; p <= totalPages; p++) {
+      html += '<button class="gp-btn' + (p === currentPage ? ' active' : '') + '" data-p="' + p + '">' + p + '</button>';
+    }
+    html += '<button class="gp-btn" ' + (currentPage === totalPages ? 'disabled' : '') + ' data-p="' + (currentPage + 1) + '">›</button>';
+    pg.innerHTML = html;
+
+    pg.querySelectorAll('.gp-btn[data-p]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentPage = parseInt(btn.dataset.p);
+        renderPage();
+        document.querySelector('.masonry').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   }
 
   tabs.forEach(function (tab) {

@@ -44,6 +44,32 @@
       color: var(--accent);
     }
 
+    .artwork-pagination {
+      display: flex;
+      justify-content: center;
+      gap: .35rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .ap-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      font-family: inherit;
+      font-size: .78rem;
+      color: var(--text-muted);
+      padding: .28rem .62rem;
+      cursor: pointer;
+      min-width: 2rem;
+      text-align: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .ap-btn:hover { background: var(--bg3); border-color: var(--accent-dim); color: var(--text); }
+    .ap-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .ap-btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
+
     .artwork-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -151,6 +177,7 @@
 
 <main>
   <div class="tab-bar" id="tab-bar"></div>
+  <div class="tab-bar" id="sub-tab-bar" style="margin-top:.5rem;display:none"></div>
   <div class="artwork-grid" id="artwork-grid"></div>
 </main>
 
@@ -175,7 +202,10 @@
     {
       folder: '第二彈呱民委託',
       label: '第二彈呱民委託',
-      images: []
+      subtabs: [
+        { label: '有背景', subfolder: '有背景', images: [] },
+        { label: '無背景', subfolder: '無背景', images: [] },
+      ]
     },
     {
       folder: '第一彈呱民委託',
@@ -265,6 +295,9 @@
   ];
 
   let currentTab = 0;
+  let currentSubTab = 0;
+  let currentPage = 1;
+  const PAGE_SIZE = 10;
 
   function buildTabs() {
     const bar = document.getElementById('tab-bar');
@@ -276,6 +309,32 @@
         bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentTab = parseInt(btn.dataset.idx);
+        currentSubTab = 0;
+        currentPage = 1;
+        buildSubTabs();
+        renderGrid();
+      });
+    });
+  }
+
+  function buildSubTabs() {
+    const cat = CATEGORIES[currentTab];
+    const subBar = document.getElementById('sub-tab-bar');
+    if (!cat.subtabs) {
+      subBar.style.display = 'none';
+      subBar.innerHTML = '';
+      return;
+    }
+    subBar.style.display = '';
+    subBar.innerHTML = cat.subtabs.map((s, i) =>
+      `<button class="tab-btn${i === currentSubTab ? ' active' : ''}" data-sidx="${i}">${s.label}</button>`
+    ).join('');
+    subBar.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        subBar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSubTab = parseInt(btn.dataset.sidx);
+        currentPage = 1;
         renderGrid();
       });
     });
@@ -284,17 +343,51 @@
   function renderGrid() {
     const cat = CATEGORIES[currentTab];
     const grid = document.getElementById('artwork-grid');
-    if (!cat.images.length) {
+    const images = cat.subtabs ? cat.subtabs[currentSubTab].images : cat.images;
+    const folder = cat.subtabs
+      ? `${cat.folder}/${cat.subtabs[currentSubTab].subfolder}`
+      : cat.folder;
+
+    if (!images.length) {
       grid.innerHTML = '<div class="artwork-empty">🖌️ 即將上線，敬請期待</div>';
+      renderArtworkPagination(0);
       return;
     }
-    grid.innerHTML = cat.images.map(img => {
-      const src = `images/artwork/${cat.folder}/${img.file}`;
+    const totalPages = Math.ceil(images.length / PAGE_SIZE);
+    if (currentPage > totalPages) currentPage = totalPages;
+    const pageItems = images.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+    grid.innerHTML = pageItems.map(img => {
+      const src = `images/artwork/${folder}/${img.file}`;
       return `<div class="artwork-item" onclick="openLightbox('${src}')">
         <img src="${src}" alt="${img.caption}" draggable="false" oncontextmenu="return false">
         <div class="artwork-caption">${img.caption}</div>
       </div>`;
     }).join('');
+    renderArtworkPagination(totalPages);
+  }
+
+  function renderArtworkPagination(totalPages) {
+    let pg = document.getElementById('artwork-pagination');
+    if (!pg) {
+      pg = document.createElement('div');
+      pg.id = 'artwork-pagination';
+      pg.className = 'artwork-pagination';
+      document.getElementById('artwork-grid').after(pg);
+    }
+    if (totalPages <= 1) { pg.innerHTML = ''; return; }
+    let html = `<button class="ap-btn" ${currentPage === 1 ? 'disabled' : ''} data-p="${currentPage - 1}">‹</button>`;
+    for (let p = 1; p <= totalPages; p++) {
+      html += `<button class="ap-btn${p === currentPage ? ' active' : ''}" data-p="${p}">${p}</button>`;
+    }
+    html += `<button class="ap-btn" ${currentPage === totalPages ? 'disabled' : ''} data-p="${currentPage + 1}">›</button>`;
+    pg.innerHTML = html;
+    pg.querySelectorAll('.ap-btn[data-p]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentPage = parseInt(btn.dataset.p);
+        renderGrid();
+        document.getElementById('artwork-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   }
 
   function openLightbox(src) {
@@ -312,6 +405,7 @@
   });
 
   buildTabs();
+  buildSubTabs();
   renderGrid();
 </script>
 <script src="js/music.js"></script>
