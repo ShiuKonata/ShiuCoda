@@ -526,7 +526,7 @@
     try {
       const res  = await fetch(SCRIPT_URL + '?action=getPostcards');
       const cards = await res.json();
-      allCards = Array.isArray(cards) ? cards : [];
+      allCards = Array.isArray(cards) ? cards.slice().reverse() : [];
       if (!allCards.length) {
         wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
         renderPcPagination(0);
