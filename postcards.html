@@ -16,18 +16,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/shared.css">
   <style>
-    /* ── 明信片牆 瀑布流 ── */
+    /* ── 明信片牆 格線 ── */
     .postcards-wall {
-      columns: 3 260px;
-      column-gap: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      align-items: start;
     }
 
     /* ── 單張明信片 ── */
     .postcard {
-      break-inside: avoid;
-      display: inline-block;
       width: 100%;
-      margin-bottom: 1rem;
       position: relative;
       border-radius: .75rem;
       overflow: hidden;
@@ -526,7 +525,7 @@
     try {
       const res  = await fetch(SCRIPT_URL + '?action=getPostcards');
       const cards = await res.json();
-      allCards = Array.isArray(cards) ? cards.slice().reverse() : [];
+      allCards = Array.isArray(cards) ? cards : [];
       if (!allCards.length) {
         wall.innerHTML = '<div class="wall-empty">還沒有人留明信片，來第一個！</div>';
         renderPcPagination(0);
