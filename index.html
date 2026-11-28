@@ -315,6 +315,41 @@
       white-space: nowrap;
     }
 
+    /* ── 三視圖 ── */
+    .refsheet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .refsheet-item {
+      border-radius: .8rem;
+      overflow: hidden;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .refsheet-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-dim);
+    }
+
+    .refsheet-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .refsheet-label {
+      text-align: center;
+      font-size: .75rem;
+      color: var(--text-muted);
+      padding: .4rem 0 .55rem;
+      letter-spacing: .08em;
+    }
+
     /* ── 口頭禪 ── */
     .catchphrase-list {
       display: flex;
@@ -659,6 +694,16 @@
         <div style="width:18px;height:18px;border-radius:50%;background:#B9C468;flex-shrink:0;border:1px solid rgba(0,0,0,.08)"></div>
         <span style="font-family:monospace;font-size:.88rem">#B9C468</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 三視圖 ── -->
+<section>
+  <h2 class="section-title">🎨 三視圖</h2>
+  <div style="display:flex;justify-content:center;">
+    <div class="refsheet-item" style="max-width:720px;width:100%;" onclick="openLightbox('images/character/三視圖/三視圖.jpg')">
+      <img src="images/character/三視圖/三視圖.jpg" alt="三視圖" loading="lazy" style="width:100%;display:block;">
     </div>
   </div>
 </section>
