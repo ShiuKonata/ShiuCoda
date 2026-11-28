@@ -401,11 +401,22 @@
   let currentPage = 1;
   const PAGE_SIZE = 10;
 
+  function catCount(c) {
+    if (c.subtabs) {
+      const names = new Set();
+      c.subtabs.forEach(t => t.images.forEach(img => names.add(img.file)));
+      return names.size;
+    }
+    return c.images.length;
+  }
+
   function buildTabs() {
     const bar = document.getElementById('tab-bar');
-    bar.innerHTML = CATEGORIES.map((c, i) =>
-      `<button class="tab-btn${i === 0 ? ' active' : ''}" data-idx="${i}">${c.label}</button>`
-    ).join('');
+    bar.innerHTML = CATEGORIES.map((c, i) => {
+      const n = catCount(c);
+      const countStr = n > 0 ? ` <span style="font-size:.7em;opacity:.6">(${n})</span>` : '';
+      return `<button class="tab-btn${i === 0 ? ' active' : ''}" data-idx="${i}">${c.label}${countStr}</button>`;
+    }).join('');
     bar.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
